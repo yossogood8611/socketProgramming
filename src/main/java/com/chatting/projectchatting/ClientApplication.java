@@ -4,6 +4,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 import com.chatting.projectchatting.client.Receiver;
 import com.chatting.projectchatting.client.Sender;
+import com.chatting.projectchatting.domain.Message;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -28,8 +29,7 @@ public class ClientApplication extends Application {
     }
 
     private Socket socket = null;
-    private Sender sender;
-    private Scanner sc;
+    private Sender sender = null;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -45,9 +45,8 @@ public class ClientApplication extends Application {
         btn1.setOnAction(event -> {
             try {
                 socket = new Socket();
-                socket.connect(new InetSocketAddress("192.168.0.75", 5001));
+                socket.connect(new InetSocketAddress("localhost", 5001));
                 sender = new Sender(socket);
-                sc = new Scanner(System.in);
                 Receiver receiver = new Receiver(socket);
                 receiver.start();
                 btn1.setDisable(true);
@@ -56,24 +55,12 @@ public class ClientApplication extends Application {
             }
         });
 
-        btn2.setOnAction(event -> {
-            sender.send(textField.getText());
-        });
-
-        textField.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                String text = textField.getText();
-                sender.send(textField.getText());
-            }
-        });
-
-
+        btn2.setOnAction(event -> sender.send(Message.text("우진", textField.getText())));
         root.getChildren().addAll(btn1, btn2, textField);
         //-----------------------------------------------------
         Scene scene = new Scene(root);
         stage.setScene(scene);
-        stage.setTitle("서버");
+        stage.setTitle("클라이언트");
         stage.show();
     }
 }

@@ -28,12 +28,13 @@ public class ServerApplication extends Application {
         btn1.setOnAction(event -> {
             try {
                 ConnectThread connectThread = new ConnectThread(new ServerSocket());
-                connectThread.init("192.168.0.75", 5001);
+                connectThread.init("localhost", 5001);
                 connectThread.start();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         });
+
 
         root.getChildren().addAll(btn1);
         //-----------------------------------------------------

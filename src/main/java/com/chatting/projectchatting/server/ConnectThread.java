@@ -2,6 +2,7 @@ package com.chatting.projectchatting.server;
 
 import static java.nio.charset.StandardCharsets.*;
 
+import com.chatting.projectchatting.domain.Message;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
@@ -45,9 +46,9 @@ public class ConnectThread extends Thread {
         }
     }
 
-    public void receiveAll(String str){
+    public void receiveAll(Message message){
         for (ClientThread connect : connects) {
-            connect.receive(str);
+            connect.receive(message);
         }
     }
 }

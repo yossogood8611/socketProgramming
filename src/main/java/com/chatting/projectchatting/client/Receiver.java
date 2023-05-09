@@ -1,8 +1,12 @@
 package com.chatting.projectchatting.client;
 
+import com.chatting.projectchatting.domain.Message;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.net.Socket;
+import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Receiver extends Thread{
 
@@ -12,15 +16,18 @@ public class Receiver extends Thread{
         this.socket = socket;
     }
 
-
     @Override
     public void run() {
         try {
             while (true) {
-                DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
-                String response = dataInputStream.readUTF();
-                if (!response.equals("")) {
-                    System.out.println(response);
+                try {
+                    ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
+                    Message message = (Message) inputStream.readObject();
+                    if (Objects.nonNull(message)) {
+                        System.out.println(message);
+                    }
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException(e);
                 }
             }
         } catch (IOException e) {

@@ -1,16 +1,15 @@
 package com.chatting.projectchatting.server;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
-import com.chatting.projectchatting.ServerApplication;
+import com.chatting.projectchatting.domain.Message;
+import com.chatting.projectchatting.domain.MessageType;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.LinkedList;
-import java.util.List;
+
+
 
 public class ClientThread extends Thread {
     private Socket socket;
@@ -23,20 +22,21 @@ public class ClientThread extends Thread {
     public void run() {
         try {
             while (!Thread.currentThread().isInterrupted()){
-                DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
-                String str = dataInputStream.readUTF();
-                System.out.println(str);
-                connectThread.receiveAll(str);
+                ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
+                Message message = (Message) inputStream.readObject();
+
+                connectThread.receiveAll(message);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void receive(String str) {
+    public void receive(Message message) {
         try {
-            DataOutputStream dataOutputStream = new DataOutputStream(this.socket.getOutputStream());
-            dataOutputStream.writeUTF(str);
+            ObjectOutputStream outputStream = new ObjectOutputStream(this.socket.getOutputStream());
+            outputStream.writeObject(message);
+            outputStream.reset();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
