@@ -4,10 +4,10 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 public class Message implements Serializable {
-    private MessageType type;
-    private String sender;
-    private String text;
-    private LocalDateTime date;
+    private final MessageType type;
+    private final String sender;
+    private final String text;
+    private final LocalDateTime date;
 
     public Message(MessageType type, String sender, String text, LocalDateTime date) {
         this.type = type;

@@ -12,8 +12,8 @@ import java.net.Socket;
 
 
 public class ClientThread extends Thread {
-    private Socket socket;
-    private ConnectThread connectThread;
+    private final Socket socket;
+    private final ConnectThread connectThread;
     public ClientThread(Socket socket,  ConnectThread connectThread) {
         this.socket = socket;
         this.connectThread = connectThread;

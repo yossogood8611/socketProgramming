@@ -16,8 +16,8 @@ import java.util.Map;
 
 public class ConnectThread extends Thread {
 
-    private List<ClientThread> connects = new LinkedList<>();
-    private ServerSocket ss;
+    private final List<ClientThread> connects = new LinkedList<>();
+    private final ServerSocket ss;
 
     public ConnectThread(ServerSocket ss) {
         this.ss = ss;
