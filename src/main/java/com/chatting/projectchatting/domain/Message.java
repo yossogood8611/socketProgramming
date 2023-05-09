@@ -57,7 +57,7 @@ public class Message implements Serializable {
 
     @Override
     public String toString() {
-        return "{" + type.toString() + " " + this.sender + " " + this.text + " " + this.date + "}";
+        return this.sender + " : " + this.text + " " + this.date;
     }
 
 }

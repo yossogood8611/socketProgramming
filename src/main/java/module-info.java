@@ -9,8 +9,8 @@ module com.chatting.projectchatting {
     requires org.kordamp.bootstrapfx.core;
     requires com.almasb.fxgl.all;
 
-    opens com.chatting.projectchatting to javafx.fxml;
-    exports com.chatting.projectchatting;
     exports com.chatting.projectchatting.client;
+    exports com.chatting.projectchatting.server;
     opens com.chatting.projectchatting.client to javafx.fxml;
+    opens com.chatting.projectchatting.server to javafx.fxml;
 }

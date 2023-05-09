@@ -1,4 +1,4 @@
-package com.chatting.projectchatting;
+package com.chatting.projectchatting.server;
 
 import com.chatting.projectchatting.server.ConnectThread;
 import java.io.IOException;
@@ -30,6 +30,7 @@ public class ServerApplication extends Application {
                 ConnectThread connectThread = new ConnectThread(new ServerSocket());
                 connectThread.init("localhost", 5001);
                 connectThread.start();
+                btn1.setDisable(true);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

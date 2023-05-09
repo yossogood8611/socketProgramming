@@ -5,12 +5,15 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
 import java.util.Objects;
+import javafx.scene.control.TextArea;
 
 public class Receiver extends Thread{
 
     private final Socket socket;
-    public Receiver(Socket socket) {
+    private final Client client;
+    public Receiver(Socket socket, Client client) {
         this.socket = socket;
+        this.client = client;
     }
 
     @Override
@@ -21,7 +24,7 @@ public class Receiver extends Thread{
                 try {
                     Message message = (Message) inputStream.readObject();
                     if (Objects.nonNull(message)) {
-                        System.out.println(message);
+                        client.receiveMessage(message);
                     }
                 } catch (ClassNotFoundException e) {
                     throw new RuntimeException(e);
