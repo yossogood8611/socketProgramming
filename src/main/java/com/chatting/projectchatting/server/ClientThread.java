@@ -10,21 +10,25 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 
-
 public class ClientThread extends Thread {
     private final Socket socket;
     private final ConnectThread connectThread;
-    public ClientThread(Socket socket,  ConnectThread connectThread) {
+    private ObjectInputStream inputStream;
+    private ObjectOutputStream outputStream;
+
+    public ClientThread(Socket socket, ConnectThread connectThread) {
         this.socket = socket;
         this.connectThread = connectThread;
+        this.inputStream = null;
+        this.outputStream = null;
     }
 
     public void run() {
         try {
-            while (!Thread.currentThread().isInterrupted()){
-                ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
+            inputStream = new ObjectInputStream(socket.getInputStream());
+            outputStream = new ObjectOutputStream(socket.getOutputStream());
+            while (!Thread.currentThread().isInterrupted()) {
                 Message message = (Message) inputStream.readObject();
-
                 connectThread.receiveAll(message);
             }
         } catch (Exception e) {
@@ -32,11 +36,10 @@ public class ClientThread extends Thread {
         }
     }
 
-    public void receive(Message message) {
+    public void receive(Message message)  {
         try {
-            ObjectOutputStream outputStream = new ObjectOutputStream(this.socket.getOutputStream());
             outputStream.writeObject(message);
-            outputStream.reset();
+            outputStream.flush();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

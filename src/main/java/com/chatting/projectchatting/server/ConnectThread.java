@@ -16,6 +16,7 @@ import java.util.Map;
 
 public class ConnectThread extends Thread {
 
+    private final ChatRoomService chatRoomService = ChatRoomService.getInstance();
     private final List<ClientThread> connects = new LinkedList<>();
     private final ServerSocket ss;
 
@@ -37,9 +38,11 @@ public class ConnectThread extends Thread {
         try {
             while (true){
                 Socket socket = ss.accept();
-                ClientThread clientThread = new ClientThread(socket, this);
-                connects.add(clientThread);
-                clientThread.start();
+                if (socket.isConnected()){
+                    ClientThread clientThread = new ClientThread(socket, this);
+                    connects.add(clientThread);
+                    clientThread.start();
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -50,5 +53,10 @@ public class ConnectThread extends Thread {
         for (ClientThread connect : connects) {
             connect.receive(message);
         }
+    }
+
+    public void roomInSocket(ClientThread clientThread, Message message) {
+        chatRoomService.roomIn(1, clientThread);
+        clientThread.receive(message);
     }
 }

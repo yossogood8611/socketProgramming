@@ -7,13 +7,10 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 public class Sender {
-
-    private final Socket socket;
     private final ObjectOutputStream outputStream;
 
     public Sender(Socket socket) {
         try {
-            this.socket = socket;
             this.outputStream = new ObjectOutputStream(socket.getOutputStream());
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -23,7 +20,7 @@ public class Sender {
     public void send(Message message){
         try {
             outputStream.writeObject(message);
-            outputStream.reset();
+            outputStream.flush();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
