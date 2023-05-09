@@ -1,9 +1,6 @@
 package com.chatting.projectchatting.server;
 
 import com.chatting.projectchatting.domain.Message;
-import com.chatting.projectchatting.domain.MessageType;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -33,6 +30,8 @@ public class ClientThread extends Thread {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            disconnect(Message.outMessage());
         }
     }
 
@@ -45,5 +44,10 @@ public class ClientThread extends Thread {
         }
     }
 
+    private void disconnect(Message message) {
+        connectThread.receiveAll(message);
+        connectThread.getCurrentUserCounter().decrease();
+        connectThread.disconnectSocket(socket);
+    }
 
 }

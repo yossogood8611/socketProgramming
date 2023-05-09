@@ -1,12 +1,12 @@
 package com.chatting.projectchatting.server;
 
-import com.chatting.projectchatting.server.ConnectThread;
 import java.io.IOException;
 import java.net.ServerSocket;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 
@@ -24,10 +24,11 @@ public class ServerApplication extends Application {
 
         //-----------------------------------------------------
         Button btn1 = new Button("서버 오픈");
+        Text text = new Text("현재" + 0 + "명 접속중...");
 
         btn1.setOnAction(event -> {
             try {
-                ConnectThread connectThread = new ConnectThread(new ServerSocket());
+                ConnectThread connectThread = new ConnectThread(new ServerSocket(), new CurrentUserCounter(text));
                 connectThread.init("localhost", 5001);
                 connectThread.start();
                 btn1.setDisable(true);
@@ -37,7 +38,7 @@ public class ServerApplication extends Application {
         });
 
 
-        root.getChildren().addAll(btn1);
+        root.getChildren().addAll(btn1, text);
         //-----------------------------------------------------
         Scene scene = new Scene(root);
         stage.setScene(scene);

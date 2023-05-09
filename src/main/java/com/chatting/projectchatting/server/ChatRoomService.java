@@ -1,6 +1,5 @@
 package com.chatting.projectchatting.server;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -8,7 +7,6 @@ import java.util.Map;
 
 public class ChatRoomService {
     private final Map<Integer, ChatRoom> roomMap = new HashMap<>();
-
     private static final ChatRoomService instance = new ChatRoomService();
     private ChatRoomService() {
     }

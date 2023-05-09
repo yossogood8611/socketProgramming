@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
 import java.util.Objects;
-import javafx.scene.control.TextArea;
 
 public class Receiver extends Thread{
 

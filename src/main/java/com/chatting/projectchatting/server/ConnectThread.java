@@ -1,27 +1,24 @@
 package com.chatting.projectchatting.server;
 
-import static java.nio.charset.StandardCharsets.*;
-
 import com.chatting.projectchatting.domain.Message;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+import javafx.application.Platform;
 
 public class ConnectThread extends Thread {
 
     private final ChatRoomService chatRoomService = ChatRoomService.getInstance();
     private final List<ClientThread> connects = new LinkedList<>();
     private final ServerSocket ss;
+    private final CurrentUserCounter currentUserCounter;
 
-    public ConnectThread(ServerSocket ss) {
+    public ConnectThread(ServerSocket ss, CurrentUserCounter currentUserCounter) {
         this.ss = ss;
+        this.currentUserCounter = currentUserCounter;
     }
 
     public void init(String hostname, int port) {
@@ -36,12 +33,16 @@ public class ConnectThread extends Thread {
     @Override
     public void run() {
         try {
+            currentUserCounter.start();
             while (true){
                 Socket socket = ss.accept();
                 if (socket.isConnected()){
                     ClientThread clientThread = new ClientThread(socket, this);
-                    connects.add(clientThread);
                     clientThread.start();
+                    Platform.runLater(() -> {
+                        connects.add(clientThread);
+                        firstMessage(Message.firstMessage());
+                    });
                 }
             }
         } catch (IOException e) {
@@ -55,8 +56,22 @@ public class ConnectThread extends Thread {
         }
     }
 
+    private void firstMessage(Message message){
+        currentUserCounter.increase();
+        receiveAll(message);
+    }
+
+
     public void roomInSocket(ClientThread clientThread, Message message) {
         chatRoomService.roomIn(1, clientThread);
         clientThread.receive(message);
+    }
+
+    public CurrentUserCounter getCurrentUserCounter() {
+        return currentUserCounter;
+    }
+
+    public void disconnectSocket(Socket socket) {
+        connects.remove(socket);
     }
 }

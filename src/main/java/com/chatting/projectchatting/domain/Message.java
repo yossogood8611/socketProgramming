@@ -25,6 +25,14 @@ public class Message implements Serializable {
         return new Message(MessageType.CHAT, sender, text, null, LocalDateTime.now());
     }
 
+    public static Message firstMessage() {
+        return new Message(MessageType.CHAT, "OOO", "누군가 채팅방에 들어왔습니다.", null, LocalDateTime.now());
+    }
+
+    public static Message outMessage() {
+        return new Message(MessageType.CHAT, "OOO", "누군가 채팅방에서 나갔습니다.", null, LocalDateTime.now());
+    }
+
     public static Message event(String sender, String text) {
         return new Message(MessageType.Event, sender, text, null, LocalDateTime.now());
     }
