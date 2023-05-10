@@ -23,7 +23,13 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
+import javafx.scene.layout.StackPane;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
 public class ClientApplication extends Application {
@@ -87,6 +93,14 @@ public class ClientApplication extends Application {
         Tab tab2 = new Tab("채팅방");
         VBox tab2Root = new VBox();
 
+        WebView webView = new WebView();
+        WebEngine webEngine = webView.getEngine();
+        Path filePath = Path.of("test.html");
+        String htmlContent = Files.readString(filePath, StandardCharsets.UTF_8);
+        webEngine.loadContent(htmlContent);
+
+        StackPane stackPane = new StackPane(webView);
+        
         HBox textRoot = new HBox();
         tab2Root.setPrefSize(600, 500);
         tab2Root.setSpacing(10);
@@ -123,7 +137,7 @@ public class ClientApplication extends Application {
                 "\uD83D\uDE0D", // Heart eyes face
                 "\uD83D\uDE2D"  // Crying face
         );
-
+      
         comboBox.setOnAction(event -> {
             String selectedEmoticon = comboBox.getValue();
             client.send(senderField.getText(), selectedEmoticon);

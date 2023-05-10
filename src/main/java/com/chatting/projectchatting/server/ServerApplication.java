@@ -54,7 +54,6 @@ public class ServerApplication extends Application {
             roomNameList.add(str);
             boolean dupChk = (count != roomNameList.size());
 
-            System.out.println(dupChk);
             if(str.isEmpty() == false && dupChk == true){
                 setRoomEvent(roomList, rooms, str);
                 txtRoomName.setText("");
