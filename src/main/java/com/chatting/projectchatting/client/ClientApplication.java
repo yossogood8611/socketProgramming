@@ -63,6 +63,10 @@ public class ClientApplication extends Application {
         TextArea textArea = new TextArea();
         TextField senderField = new TextField();
 
+        // 랜덤생성 닉네임
+        Button randomGenerateNickBtn = new Button("랜덤 닉네임 생성");
+        randomGenerateNickBtn.setOnAction(actionEvent -> senderField.setText(NicknameGenerator.randomNicknameGenerate()));
+
         HBox subRoot = new HBox();
         ListView<String> roomList = new ListView<>();
         ObservableList<String> rooms = FXCollections.observableArrayList();
@@ -70,7 +74,7 @@ public class ClientApplication extends Application {
         tab1Root.setPadding(new Insets(10, 10, 10, 10));
         tab1Root.setSpacing(10);
 
-        subRoot.getChildren().addAll( text, senderField,btn1);
+        subRoot.getChildren().addAll( text, senderField, randomGenerateNickBtn, btn1);
         tab1Root.getChildren().addAll(subRoot,btnRefrsh,roomList);
 
         tab1.setContent(tab1Root);
@@ -92,8 +96,38 @@ public class ClientApplication extends Application {
         btn2.setDisable(true);
         tab2Root.setSpacing(10);
 
-        textRoot.getChildren().addAll(textField, btn2);
-        tab2Root.getChildren().addAll( textArea, textRoot);
+        // 매크로
+        HBox macro = new HBox();
+        macro.setSpacing(20);
+        Button okBtn = new Button("네.");
+        Button noBtn = new Button("아니요.");
+        Button thanksBtn = new Button("감사합니다.");
+        Button hardBtn = new Button("고생하셨습니다.");
+        okBtn.setOnAction(actionEvent -> client.send(senderField.getText(), okBtn.getText()));
+        noBtn.setOnAction(actionEvent -> client.send(senderField.getText(), noBtn.getText()));
+        thanksBtn.setOnAction(actionEvent -> client.send(senderField.getText(), thanksBtn.getText()));
+        hardBtn.setOnAction(actionEvent -> client.send(senderField.getText(), hardBtn.getText()));
+        macro.getChildren().addAll(okBtn, noBtn, thanksBtn, hardBtn);
+        //매크로 end
+
+
+        // 이모지 리스트
+        ComboBox<String> comboBox = new ComboBox<>();
+        comboBox.getItems().addAll(
+                "\uD83D\uDE00", // Grinning face
+                "\uD83D\uDE02", // Face with tears of joy
+                "\uD83D\uDE1C", // Face with tongue sticking out
+                "\uD83D\uDE0D", // Heart eyes face
+                "\uD83D\uDE2D"  // Crying face
+        );
+
+        comboBox.setOnAction(event -> {
+            String selectedEmoticon = comboBox.getValue();
+            client.send(senderField.getText(), selectedEmoticon);
+        });
+
+        textRoot.getChildren().addAll(textField, comboBox, btn2);
+        tab2Root.getChildren().addAll( textArea, textRoot, macro);
         tab2.setContent(tab2Root);
 
         //-----------------------------------------------------
