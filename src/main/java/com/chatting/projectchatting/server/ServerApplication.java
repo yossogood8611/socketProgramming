@@ -70,8 +70,6 @@ public class ServerApplication extends Application {
         stage.setTitle("서버");
         stage.show();
     }
-
-
     private void setRoomEvent(ListView<String> roomList, ObservableList<String> rooms,String str) {
         try {
             ServerRoom serverRoom = new ServerRoom();
