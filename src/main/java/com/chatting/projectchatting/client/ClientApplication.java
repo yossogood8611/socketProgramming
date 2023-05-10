@@ -15,10 +15,14 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import java.io.*;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -59,6 +63,7 @@ public class ClientApplication extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        File parentDir = new File("./chattingLog");
         TabPane tabPane = new TabPane();
         //-----------------------------------------------------
         // Tab 1: 방 선택
@@ -120,6 +125,8 @@ public class ClientApplication extends Application {
         Button noBtn = new Button("아니요.");
         Button thanksBtn = new Button("감사합니다.");
         Button hardBtn = new Button("고생하셨습니다.");
+        Button exportBtn = new Button("내보내기");
+        Button importBtn = new Button("가져오기");
         okBtn.setOnAction(actionEvent -> client.send(senderField.getText(), okBtn.getText()));
         noBtn.setOnAction(actionEvent -> client.send(senderField.getText(), noBtn.getText()));
         thanksBtn.setOnAction(actionEvent -> client.send(senderField.getText(), thanksBtn.getText()));
@@ -143,7 +150,55 @@ public class ClientApplication extends Application {
             client.send(senderField.getText(), selectedEmoticon);
         });
 
-        textRoot.getChildren().addAll(textField, comboBox, btn2);
+        exportBtn.setOnAction(actionEvent -> {
+            String contents = textArea.getText().toString();
+            LocalDateTime now = LocalDateTime.now();
+            String formateNow = now.format(DateTimeFormatter.ofPattern("MM_dd_HH_mm"));
+            System.out.println(parentDir.getPath());
+            String fileName = parentDir.getPath() + "/" + formateNow+"_"+roomList.getSelectionModel().getSelectedItem()+".txt";
+
+            if (!parentDir.exists()){
+                parentDir.mkdir();
+                System.out.println("chattingLog 디렉토리 생성");
+            }
+            BufferedWriter writer = null;
+            try {
+                writer = new BufferedWriter(new FileWriter(fileName));
+                System.out.println("저장 완료");
+                writer.write(contents);
+                writer.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        importBtn.setOnAction(actionEvent -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("파일 선택");
+            fileChooser.setInitialDirectory(new File("./chattingLog"));
+            File selectedFile = fileChooser.showOpenDialog(stage);
+            if (selectedFile != null){
+                System.out.println("선택한 파일"+selectedFile.getPath());
+                File file = new File(selectedFile.getPath());
+                try (BufferedReader br = new BufferedReader(new FileReader(file))){
+                    String line;
+                    String result = "";
+                    while ((line=br.readLine())!=null){
+                        result+=line+"\n";
+                    }
+                    textArea.setText("이전 채팅을 불러옵니다.\n" +result+ "\n" +textArea.getText());
+                } catch (IOException e){
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        // 텍스트 엔터 누를 시 보내기
+        textField.setOnAction(actionEvent -> {
+            client.send(senderField.getText(), textField.getText());
+            textField.setText("");
+        });
+
+        textRoot.getChildren().addAll(textField, comboBox, btn2, exportBtn, importBtn);
         tab2Root.getChildren().addAll( textArea, textRoot, macro);
         tab2.setContent(tab2Root);
 
