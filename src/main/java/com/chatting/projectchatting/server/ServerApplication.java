@@ -3,6 +3,7 @@ package com.chatting.projectchatting.server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
@@ -21,7 +22,7 @@ public class ServerApplication extends Application {
         VBox root = new VBox();
         root.setPrefSize(400, 300);
         root.setSpacing(10);
-
+        root.setPadding(new Insets( 10, 0, 0, 0));
         //-----------------------------------------------------
         Button btn1 = new Button("서버 오픈");
         Text text = new Text("현재" + 0 + "명 접속중...");
@@ -45,7 +46,4 @@ public class ServerApplication extends Application {
         stage.setTitle("서버");
         stage.show();
     }
-
-
-
 }

@@ -9,6 +9,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.geometry.Insets;
 
 
 public class ClientApplication extends Application {
@@ -26,6 +27,7 @@ public class ClientApplication extends Application {
         HBox textRoot = new HBox();
         root.setPrefSize(400, 300);
         root.setSpacing(10);
+        root.setPadding(new Insets( 10, 0, 0, 0));
         subRoot.setSpacing(10);
         textRoot.setSpacing(10);
 
@@ -44,12 +46,17 @@ public class ClientApplication extends Application {
             client.start();
         });
 
-        btn2.setOnAction(event -> client.send(senderField.getText(), textField.getText()));
+        btn2.setOnAction(event -> {
+            client.send(senderField.getText(), textField.getText());
+            textField.setText("");
+        });
+
         btn3.setOnAction(event -> {
             senderField.setDisable(true);
             btn3.setDisable(true);
         });
 
+        root.setSpacing(10);
         subRoot.getChildren().addAll(btn1, text, senderField, btn3);
         textRoot.getChildren().addAll(textField, btn2);
         root.getChildren().addAll(subRoot, textArea, textRoot);
