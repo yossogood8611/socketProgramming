@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 public class Message implements Serializable {
     private static final int MAX_LENGTH = 255;
+    
     private final MessageType type;
     private final String sender;
     private final String text;
