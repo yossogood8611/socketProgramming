@@ -37,6 +37,7 @@ public class ClientThread extends Thread {
 
     public void receive(Message message)  {
         try {
+            System.out.println(message);
             outputStream.writeObject(message);
             outputStream.flush();
         } catch (IOException e) {

@@ -1,13 +1,15 @@
 package com.chatting.projectchatting.client;
 
 import com.chatting.projectchatting.domain.Message;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 
-public class Client extends Thread{
+public class Client extends Thread {
 
     public static final String HOST_NAME = "localhost";
 
@@ -18,8 +20,10 @@ public class Client extends Thread{
     private final TextArea textArea;
     private final int port;
 
+    private final Socket socket;
 
     public Client(Button button1, Button button2, TextArea textArea, int port) {
+        this.socket = new Socket();
         this.sender = null;
         this.receiver = null;
         this.button1 = button1;
@@ -31,7 +35,6 @@ public class Client extends Thread{
     @Override
     public void run() {
         try {
-            Socket socket = new Socket();
             socket.connect(new InetSocketAddress(HOST_NAME, port));
             sender = new Sender(socket);
             receiver = new Receiver(socket, this);
@@ -49,6 +52,16 @@ public class Client extends Thread{
 
     public void receiveMessage(Message message) {
         String getText = message.toString();
-        textArea.setText(textArea.getText() + ProfanityFilter.filter(getText) +"\n");
+        textArea.setText(textArea.getText() + ProfanityFilter.filter(getText) + "\n");
+    }
+
+    public void close() {
+        try {
+            System.out.println("close ---------");
+            this.receiver.close();
+            this.socket.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
