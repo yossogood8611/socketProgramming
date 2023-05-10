@@ -27,7 +27,6 @@ public class ClientApplication extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         TabPane tabPane = new TabPane();
-
         //-----------------------------------------------------
         // Tab 1: 방 선택
         Tab tab1 = new Tab("방 선택");
@@ -72,7 +71,6 @@ public class ClientApplication extends Application {
         textRoot.getChildren().addAll(textField, btn2);
         tab2Root.getChildren().addAll( textArea, textRoot);
 
-        tab2.setContent(tab2Root);
         //-----------------------------------------------------
 
         //-----------------------------------------------------
