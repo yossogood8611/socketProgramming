@@ -24,6 +24,8 @@ import java.util.function.Function;
 
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
+import javafx.stage.WindowEvent;
+
 public class ClientApplication extends Application {
 
     public static void main(String[] args) {
@@ -42,6 +44,8 @@ public class ClientApplication extends Application {
     private RadioButton mediumTextButton;
     private RadioButton largeTextButton;
 
+    private Button quitRoomButton;
+
     protected void onChangeBackgroundColor(Color color, Stage stage) {
         // 배경색 변경
         Region root = (Region) stage.getScene().getRoot();
@@ -50,6 +54,10 @@ public class ClientApplication extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        stage.setOnCloseRequest(e->{
+            System.exit(0);
+        });
+
         TabPane tabPane = new TabPane();
         //-----------------------------------------------------
         // Tab 1: 방 선택
@@ -96,6 +104,13 @@ public class ClientApplication extends Application {
         btn2.setDisable(true);
         tab2Root.setSpacing(10);
 
+        quitRoomButton = new Button("방 나가기");
+        quitRoomButton.setOnAction(e -> {
+            //disconnect 호출
+            textField.setText("");
+        });
+
+
         // 매크로
         HBox macro = new HBox();
         macro.setSpacing(20);
@@ -127,7 +142,7 @@ public class ClientApplication extends Application {
         });
 
         textRoot.getChildren().addAll(textField, comboBox, btn2);
-        tab2Root.getChildren().addAll( textArea, textRoot, macro);
+        tab2Root.getChildren().addAll( textArea, textRoot ,macro,  quitRoomButton);
         tab2.setContent(tab2Root);
 
         //-----------------------------------------------------
