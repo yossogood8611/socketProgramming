@@ -20,12 +20,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
+import java.util.*;
 
 public class ServerApplication extends Application {
 
     static int port = 5000; 
     static StringBuffer sb = new StringBuffer("");
+    private static HashSet<String> roomNameList = new HashSet<>();
+
     public static void main(String[] args) {
         launch();
     }
@@ -34,13 +36,13 @@ public class ServerApplication extends Application {
     public void start(Stage stage) throws Exception {
         VBox root = new VBox();
         HBox subRoot = new HBox();
-       subRoot.setSpacing(10);
+        subRoot.setSpacing(10);
         root.setPrefSize(400, 300);
         root.setSpacing(10);
         root.setPadding(new Insets( 10, 0, 0, 0));
 
         //-----------------------------------------------------
-        Button btn1 = new Button("방 오픈");
+        Button btn1 = new Button("방 개설");
         TextField txtRoomName = new TextField();
 
         ListView<String> roomList = new ListView<>();
@@ -48,13 +50,19 @@ public class ServerApplication extends Application {
 
         btn1.setOnAction(event -> {
             String str = txtRoomName.getText();
-            if(str.isEmpty() == false ){
-                setEvent(roomList, rooms, str);
+            int count = roomNameList.size();
+            roomNameList.add(str);
+            boolean dupChk = (count != roomNameList.size());
+
+            System.out.println(dupChk);
+            if(str.isEmpty() == false && dupChk == true){
+                setRoomEvent(roomList, rooms, str);
                 txtRoomName.setText("");
-            }else{
+            } else{
                 txtRoomName.requestFocus();
             }
         });
+
         subRoot.getChildren().addAll(txtRoomName, btn1);
         root.getChildren().addAll(subRoot, roomList);
         //-----------------------------------------------------
@@ -64,10 +72,17 @@ public class ServerApplication extends Application {
         stage.show();
     }
 
-    private void setEvent(ListView<String> roomList, ObservableList<String> rooms,String str) {
+    /**
+     * 
+     * @param roomList
+     * @param rooms
+     * @param str
+     */
+    private void setRoomEvent(ListView<String> roomList, ObservableList<String> rooms,String str) {
         try {
             ServerRoom serverRoom = new ServerRoom(port);
             serverRoom.init("localhost", port);
+            roomNameList.add(str);
             rooms.add(str);
             sb.append(port + "|" + str + "\n");
             roomList.setItems(rooms);
@@ -80,15 +95,8 @@ public class ServerApplication extends Application {
             }
 
             port++;
-            
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private static <T> boolean checkForDuplicates(T... array)
-    {
-        Long distinctCount = Stream.of(array).distinct().count();
-        return array.length != distinctCount;
     }
 }
