@@ -48,6 +48,7 @@ public class Client extends Thread{
     }
 
     public void receiveMessage(Message message) {
-        textArea.setText(textArea.getText() + message.toString() +"\n");
+        String getText = message.toString();
+        textArea.setText(textArea.getText() + ProfanityFilter.filter(getText) +"\n");
     }
 }
