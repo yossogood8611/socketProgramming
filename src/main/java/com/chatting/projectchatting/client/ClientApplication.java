@@ -1,12 +1,20 @@
 package com.chatting.projectchatting.client;
 
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.geometry.Insets;
@@ -23,6 +31,22 @@ public class ClientApplication extends Application {
     }
 
     private Client client = null;
+
+    private RadioButton pinkButton;
+    private RadioButton greenButton;
+    private RadioButton blueButton;
+
+    private Slider opacitySlider;
+
+    private RadioButton smallTextButton;
+    private RadioButton mediumTextButton;
+    private RadioButton largeTextButton;
+
+    protected void onChangeBackgroundColor(Color color, Stage stage) {
+        // 배경색 변경
+        Region root = (Region) stage.getScene().getRoot();
+        root.setBackground(new javafx.scene.layout.Background(new javafx.scene.layout.BackgroundFill(color, null, null)));
+    }
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -81,7 +105,42 @@ public class ClientApplication extends Application {
         tab3Root.setPadding(new Insets(10, 10, 10, 10));
         tab3Root.setSpacing(10);
 
-        // Add settings logic and UI elements here.
+        Text colorText = new Text("Change Background Color");
+        ToggleGroup colorGroup = new ToggleGroup();
+        pinkButton = new RadioButton("pink color");
+        pinkButton.setToggleGroup(colorGroup);
+        pinkButton.setOnAction(e -> onChangeBackgroundColor(Color.web("#FEE8F6"), stage));
+        greenButton = new RadioButton("green color");
+        greenButton.setToggleGroup(colorGroup);
+        greenButton.setOnAction(e -> onChangeBackgroundColor(Color.web("#F7FEE8"), stage));
+        blueButton = new RadioButton("blue color");
+        blueButton.setToggleGroup(colorGroup);
+        blueButton.setOnAction(e -> onChangeBackgroundColor(Color.web("#E8F1FE"), stage));
+
+        Text opacityText = new Text("Change Background Opacity");
+        opacitySlider = new Slider(0,100,100);
+        opacitySlider.valueProperty().addListener(
+                new ChangeListener<Number>() {
+                    public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                        stage.setOpacity(newValue.doubleValue() / 100);
+                    }
+                }
+        );
+
+        Text fontWeightText = new Text("Change Font Size");
+        ToggleGroup fontWeightGroup = new ToggleGroup();
+        smallTextButton = new RadioButton("small size");
+        smallTextButton.setToggleGroup(fontWeightGroup);
+        smallTextButton.setOnAction(e->textArea.setFont(Font.font("System", FontWeight.NORMAL, 10)));
+        mediumTextButton = new RadioButton("medium size");
+        mediumTextButton.setToggleGroup(fontWeightGroup);
+        mediumTextButton.setOnAction(e->textArea.setFont(Font.font("System", FontWeight.NORMAL, 15)));
+        largeTextButton = new RadioButton("large size");
+        largeTextButton.setToggleGroup(fontWeightGroup);
+        largeTextButton.setOnAction(e->textArea.setFont(Font.font("System", FontWeight.NORMAL, 20)));
+
+
+        tab3Root.getChildren().addAll(colorText,pinkButton, greenButton, blueButton, opacityText, opacitySlider, fontWeightText, smallTextButton, mediumTextButton, largeTextButton);
 
         tab3.setContent(tab3Root);
         //----------------------------------------------------
