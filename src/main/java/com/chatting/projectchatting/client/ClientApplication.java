@@ -177,6 +177,8 @@ public class ClientApplication extends Application {
                 System.out.println("저장 완료");
                 writer.write(contents);
                 writer.close();
+                textArea.setText(textArea.getText() + "\n" + "대화 내용 저장 완료 : " + fileName);
+
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -208,7 +210,7 @@ public class ClientApplication extends Application {
             textField.setText("");
         });
 
-         textRoot.getChildren().addAll(textField, comboBox, btn2);
+        textRoot.getChildren().addAll(textField, comboBox, btn2, exportBtn, importBtn);
         tab2Root.getChildren().addAll( textArea, textRoot,macro,quitRoomButton);
         tab2Root.setPadding(new Insets(10, 10, 10, 10));
       
