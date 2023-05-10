@@ -71,9 +71,10 @@ public class ServerApplication extends Application {
         stage.show();
     }
 
+
     private void setRoomEvent(ListView<String> roomList, ObservableList<String> rooms,String str) {
         try {
-            ServerRoom serverRoom = new ServerRoom(port);
+            ServerRoom serverRoom = new ServerRoom();
             serverRoom.init("localhost", port);
             roomNameList.add(str);
             rooms.add(str);

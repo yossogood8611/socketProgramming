@@ -9,9 +9,6 @@ import javafx.scene.text.Text;
 public class ServerRoom {
     private ServerSocket serverSocket;
 
-    public ServerRoom(int roomId) {
-    }
-
     public void init(String host, int port) throws IOException {
         serverSocket = new ServerSocket();
         serverSocket.bind(new InetSocketAddress(host, port));
