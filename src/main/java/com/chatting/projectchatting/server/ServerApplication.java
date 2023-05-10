@@ -13,6 +13,8 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -29,17 +31,24 @@ public class ServerApplication extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         VBox root = new VBox();
+        HBox subRoot = new HBox();
+        subRoot.setSpacing(10);
         root.setPrefSize(400, 300);
         root.setSpacing(10);
         root.setPadding(new Insets( 10, 0, 0, 0));
 
         //-----------------------------------------------------
         Button btn1 = new Button("방 오픈");
+        TextField txtRoomName = new TextField();
+
         ListView<String> roomList = new ListView<>();
         ObservableList<String> rooms = FXCollections.observableArrayList();
 
-        btn1.setOnAction(event -> setEvent(roomList, rooms));
-        root.getChildren().addAll(btn1, roomList);
+        btn1.setOnAction(event -> {
+            setEvent(roomList, rooms);
+        });
+        subRoot.getChildren().addAll(txtRoomName, btn1);
+        root.getChildren().addAll(subRoot, roomList);
         //-----------------------------------------------------
         Scene scene = new Scene(root);
         stage.setScene(scene);
