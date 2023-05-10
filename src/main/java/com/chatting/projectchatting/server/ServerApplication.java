@@ -24,7 +24,7 @@ import java.util.*;
 
 public class ServerApplication extends Application {
 
-    static int port = 5000; 
+    static int port = 5000;
     static StringBuffer sb = new StringBuffer("");
     private static HashSet<String> roomNameList = new HashSet<>();
 
@@ -54,7 +54,7 @@ public class ServerApplication extends Application {
             roomNameList.add(str);
             boolean dupChk = (count != roomNameList.size());
 
-            if(str.isEmpty() == false && dupChk == true){
+            if(!str.isEmpty() && dupChk){
                 setRoomEvent(roomList, rooms, str);
                 txtRoomName.setText("");
             } else{
@@ -71,12 +71,6 @@ public class ServerApplication extends Application {
         stage.show();
     }
 
-    /**
-     * 
-     * @param roomList
-     * @param rooms
-     * @param str
-     */
     private void setRoomEvent(ListView<String> roomList, ObservableList<String> rooms,String str) {
         try {
             ServerRoom serverRoom = new ServerRoom(port);
