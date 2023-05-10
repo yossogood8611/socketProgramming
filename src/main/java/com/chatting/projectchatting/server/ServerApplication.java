@@ -4,7 +4,9 @@ import java.io.IOException;
 
 import java.io.*;
 import java.net.ServerSocket;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -32,7 +34,7 @@ public class ServerApplication extends Application {
     public void start(Stage stage) throws Exception {
         VBox root = new VBox();
         HBox subRoot = new HBox();
-        subRoot.setSpacing(10);
+       subRoot.setSpacing(10);
         root.setPrefSize(400, 300);
         root.setSpacing(10);
         root.setPadding(new Insets( 10, 0, 0, 0));
@@ -45,7 +47,13 @@ public class ServerApplication extends Application {
         ObservableList<String> rooms = FXCollections.observableArrayList();
 
         btn1.setOnAction(event -> {
-            setEvent(roomList, rooms);
+            String str = txtRoomName.getText();
+            if(str.isEmpty() == false ){
+                setEvent(roomList, rooms, str);
+                txtRoomName.setText("");
+            }else{
+                txtRoomName.requestFocus();
+            }
         });
         subRoot.getChildren().addAll(txtRoomName, btn1);
         root.getChildren().addAll(subRoot, roomList);
@@ -56,15 +64,13 @@ public class ServerApplication extends Application {
         stage.show();
     }
 
-    private void setEvent(ListView<String> roomList, ObservableList<String> rooms) {
+    private void setEvent(ListView<String> roomList, ObservableList<String> rooms,String str) {
         try {
-            String roomId = "" + port;
             ServerRoom serverRoom = new ServerRoom(port);
             serverRoom.init("localhost", port);
-            rooms.add(roomId);
-            sb.append(roomId + "\n");
+            rooms.add(str);
+            sb.append(port + "|" + str + "\n");
             roomList.setItems(rooms);
-
             try {
                 Writer writer = new FileWriter("server.txt");
                 writer.write(sb.toString());
@@ -78,5 +84,11 @@ public class ServerApplication extends Application {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static <T> boolean checkForDuplicates(T... array)
+    {
+        Long distinctCount = Stream.of(array).distinct().count();
+        return array.length != distinctCount;
     }
 }
