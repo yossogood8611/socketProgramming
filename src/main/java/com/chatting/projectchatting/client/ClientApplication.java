@@ -1,5 +1,4 @@
 package com.chatting.projectchatting.client;
-
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -12,6 +11,9 @@ import javafx.stage.Stage;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import java.io.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.function.Function;
 
 import javafx.collections.ObservableList;
@@ -23,6 +25,7 @@ public class ClientApplication extends Application {
     }
 
     private Client client = null;
+    private static Map<String,Integer> roomMap = new HashMap<>();
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -102,7 +105,8 @@ public class ClientApplication extends Application {
         
         // 접속 이벤트 
         btn1.setOnAction(event -> {
-            int port = Integer.valueOf(roomList.getSelectionModel().getSelectedItem()); 
+            String roomName =roomList.getSelectionModel().getSelectedItem();
+            int port = roomMap.get(roomName); 
             String nick = senderField.getText();
              
              if (nick.isEmpty()) {
@@ -112,7 +116,7 @@ public class ClientApplication extends Application {
                  client.start();
                  tabPane.getSelectionModel().select(1);
                  textField.requestFocus();
-                 stage.setTitle("방 번호:" + port);
+                 stage.setTitle("방 :" + roomName);
              }
          });
 
@@ -141,8 +145,9 @@ public class ClientApplication extends Application {
              // 한 줄씩 읽기
             String line;
             while ((line = br.readLine()) != null) {
-                // 읽은 한 줄 출력
-                rooms.add(line);
+                String[] arr = line.split("\\|\\s*");
+                rooms.add(arr[1]);
+                roomMap.put(arr[1],Integer.valueOf(arr[0]));
             }
             roomList.setItems(rooms);
             br.close();
