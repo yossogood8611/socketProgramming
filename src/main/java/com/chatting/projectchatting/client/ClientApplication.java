@@ -59,6 +59,10 @@ public class ClientApplication extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        stage.setOnCloseRequest(e->{
+            System.exit(0);
+        });
+        
         TabPane tabPane = new TabPane();
         //-----------------------------------------------------
         // Tab 1: 방 선택
@@ -113,6 +117,12 @@ public class ClientApplication extends Application {
         btn2.setDisable(true);
         tab2Root.setSpacing(10);
 
+        Button quitRoomButton = new Button("방 나가기");
+        quitRoomButton.setOnAction(e -> {
+            //disconnect 호출
+            textField.setText("");
+        });
+
         // 매크로
         HBox macro = new HBox();
         macro.setSpacing(20);
@@ -144,7 +154,8 @@ public class ClientApplication extends Application {
         });
 
         textRoot.getChildren().addAll(textField, comboBox, btn2);
-        tab2Root.getChildren().addAll( textArea, textRoot, macro);
+        tab2Root.getChildren().addAll( textArea, textRoot,macro,quitRoomButton);
+        tab2Root.setPadding(new Insets(10, 10, 10, 10));
         tab2.setContent(tab2Root);
 
         //-----------------------------------------------------
