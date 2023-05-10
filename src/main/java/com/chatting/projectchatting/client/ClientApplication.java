@@ -70,6 +70,7 @@ public class ClientApplication extends Application {
 
         textRoot.getChildren().addAll(textField, btn2);
         tab2Root.getChildren().addAll( textArea, textRoot);
+        tab2.setContent(tab2Root);
 
         //-----------------------------------------------------
 
