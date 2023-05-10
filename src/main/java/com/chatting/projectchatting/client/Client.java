@@ -10,27 +10,29 @@ import javafx.scene.control.TextArea;
 public class Client extends Thread{
 
     public static final String HOST_NAME = "localhost";
-    public static final int PORT = 5001;
 
     private Sender sender;
     private Receiver receiver;
     private final Button button1;
     private final Button button2;
     private final TextArea textArea;
+    private final int port;
 
-    public Client(Button button1, Button button2, TextArea textArea) {
+
+    public Client(Button button1, Button button2, TextArea textArea, int port) {
         this.sender = null;
         this.receiver = null;
         this.button1 = button1;
         this.button2 = button2;
         this.textArea = textArea;
+        this.port = port;
     }
 
     @Override
     public void run() {
         try {
             Socket socket = new Socket();
-            socket.connect(new InetSocketAddress(HOST_NAME, PORT));
+            socket.connect(new InetSocketAddress(HOST_NAME, port));
             sender = new Sender(socket);
             receiver = new Receiver(socket, this);
             receiver.start();

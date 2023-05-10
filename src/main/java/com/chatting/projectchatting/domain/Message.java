@@ -2,6 +2,7 @@ package com.chatting.projectchatting.domain;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Message implements Serializable {
     private static final int MAX_LENGTH = 255;
@@ -12,6 +13,7 @@ public class Message implements Serializable {
 
     private final Integer roomId;
     private final LocalDateTime date;
+
 
     public Message(MessageType type, String sender, String text, Integer roomId, LocalDateTime date) {
         validateTextLength(text);
@@ -27,11 +29,11 @@ public class Message implements Serializable {
     }
 
     public static Message firstMessage() {
-        return new Message(MessageType.CHAT, "OOO", "누군가 채팅방에 들어왔습니다.", null, LocalDateTime.now());
+        return new Message(MessageType.CHAT, "운영자", "누군가 채팅방에 들어왔습니다.", null, LocalDateTime.now());
     }
 
     public static Message outMessage() {
-        return new Message(MessageType.CHAT, "OOO", "누군가 채팅방에서 나갔습니다.", null, LocalDateTime.now());
+        return new Message(MessageType.CHAT, "운영자", "누군가 채팅방에서 나갔습니다.", null, LocalDateTime.now());
     }
 
     public static Message event(String sender, String text) {
@@ -66,7 +68,8 @@ public class Message implements Serializable {
 
     @Override
     public String toString() {
-        return this.sender + " : " + this.text + " " + this.date;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        return this.date.format(formatter) + ") " + this.sender + " : " + this.text ;
     }
 
 }
