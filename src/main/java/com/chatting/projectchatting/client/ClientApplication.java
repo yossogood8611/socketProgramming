@@ -19,6 +19,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import java.io.*;
 
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -269,7 +270,13 @@ public class ClientApplication extends Application {
         largeTextButton.setOnAction(e->textArea.setFont(Font.font("System", FontWeight.NORMAL, 20)));
         mediumTextButton.setSelected(true);
 
-        tab3Root.getChildren().addAll(colorText,whiteButton, pinkButton, greenButton, blueButton, new Region(),opacityText, opacitySlider, new Region(),fontWeightText, smallTextButton, mediumTextButton, largeTextButton);
+        Image img = new Image("file:./pngegg.png");
+        ImageView imgView = new ImageView();
+        imgView.setImage(img);
+        imgView.setFitWidth(100);
+        imgView.setFitHeight(100);
+
+        tab3Root.getChildren().addAll(colorText,whiteButton, pinkButton, greenButton, blueButton, new Region(),opacityText, opacitySlider, new Region(),fontWeightText, smallTextButton, mediumTextButton, largeTextButton, imgView);
         tab3Root.setSpacing(10);
         tab3.setContent(tab3Root);
         //----------------------------------------------------
