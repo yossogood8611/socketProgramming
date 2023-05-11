@@ -126,13 +126,19 @@ public class ClientApplication extends Application {
         Button noBtn = new Button("아니요.");
         Button thanksBtn = new Button("감사합니다.");
         Button hardBtn = new Button("고생하셨습니다.");
+        Button afterCallBtn = new Button("잠시 후 연락드리겠습니다.");
+        Button callBtn = new Button("전화주세요.");
+        Button restBtn = new Button("쉬었다가 합시다.");
         Button exportBtn = new Button("내보내기");
         Button importBtn = new Button("가져오기");
         okBtn.setOnAction(actionEvent -> client.send(senderField.getText(), okBtn.getText()));
         noBtn.setOnAction(actionEvent -> client.send(senderField.getText(), noBtn.getText()));
         thanksBtn.setOnAction(actionEvent -> client.send(senderField.getText(), thanksBtn.getText()));
         hardBtn.setOnAction(actionEvent -> client.send(senderField.getText(), hardBtn.getText()));
-        macro.getChildren().addAll(okBtn, noBtn, thanksBtn, hardBtn);
+        afterCallBtn.setOnAction(actionEvent -> client.send(senderField.getText(), afterCallBtn.getText()));
+        restBtn.setOnAction(actionEvent -> client.send(senderField.getText(), restBtn.getText()));
+        callBtn.setOnAction(actionEvent -> client.send(senderField.getText(), callBtn.getText()));
+        macro.getChildren().addAll(okBtn, noBtn, thanksBtn, hardBtn, afterCallBtn,callBtn,  restBtn);
         //매크로 end
 
 
