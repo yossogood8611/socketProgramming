@@ -1,12 +1,10 @@
 package com.chatting.projectchatting.server;
 
 import com.chatting.projectchatting.domain.Message;
-import com.chatting.projectchatting.domain.MessageType;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.Optional;
 
 
 public class ClientThread extends Thread {
@@ -23,6 +21,7 @@ public class ClientThread extends Thread {
     }
 
     public void run() {
+        boolean logout = false;
         try {
             inputStream = new ObjectInputStream(socket.getInputStream());
             outputStream = new ObjectOutputStream(socket.getOutputStream());
@@ -34,13 +33,14 @@ public class ClientThread extends Thread {
                         break;
                     case LOG_OUT:
                         System.out.println("LOGOUT  ----- ");
-                        this.disconnect(Message.outMessage());
+                        logout = true;
+                        this.disconnect(message);
                         continue;
                     case OUT:
                         connectThread.dropOutUser(message);
                         continue;
-                    default: break;
-
+                    default:
+                        break;
                 }
 
                 connectThread.receiveAll(message);
@@ -48,7 +48,10 @@ public class ClientThread extends Thread {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            disconnect(Message.outMessage());
+            System.out.println("finally  ---  ");
+            if(logout == false) {
+                disconnect(Message.outMessage());
+            }
         }
     }
 
@@ -62,9 +65,9 @@ public class ClientThread extends Thread {
     }
 
     private void disconnect(Message message) {
-        connectThread.receiveAll(message);
         connectThread.getCurrentUserCounter().decrease();
         connectThread.disconnectSocket(socket);
+        connectThread.receiveAll(message);
     }
 
     public boolean isSame(Socket socket) {

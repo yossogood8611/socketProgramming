@@ -1,44 +1,51 @@
 package com.chatting.projectchatting.client;
-import com.chatting.projectchatting.domain.Message;
-import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
-import javafx.geometry.Insets;
-import javafx.scene.control.*;
-import java.io.*;
 
-import java.nio.file.Paths;
+import com.chatting.projectchatting.domain.Message;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Reader;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
-
-import javafx.scene.layout.StackPane;
-import java.util.function.Function;
-
+import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListView;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.Slider;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
-
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import javafx.collections.ObservableList;
-import javafx.collections.FXCollections;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 public class ClientApplication extends Application {
 
     public static void main(String[] args) {
@@ -318,19 +325,29 @@ public class ClientApplication extends Application {
         // 접속 이벤트
         btn1.setOnAction(event -> {
             String roomName = roomList.getSelectionModel().getSelectedItem();
-            int port = roomMap.get(roomName);
             String nick = senderField.getText();
-
-             if (nick.isEmpty()) {
+             if (nick.isEmpty() || roomName.isEmpty()) {
+                 Alert alert = new Alert(Alert.AlertType.ERROR);
+                 alert.setTitle("경고");
+                 alert.setHeaderText(null);
+                 alert.setContentText("닉네임과 방을 확인해주세요.");
+                 alert.showAndWait();
                  senderField.requestFocus();
              } else {
-                 client = new Client(btn1, btn2, textArea, port, senderField.getText(), userList);
-                 client.start();
-                 tabPane.getSelectionModel().select(1);
-                 textField.requestFocus();
-                 stage.setTitle("방 :" + roomName);
-                 senderField.setEditable(false);
-                 randomGenerateNickBtn.setDisable(true);
+                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                 alert.setTitle("접속");
+                 alert.setHeaderText("접속하시겠습니까?");
+                 if(alert.showAndWait().get() == ButtonType.OK) {
+                     int port = roomMap.get(roomName);
+                     client = new Client(btn1, btn2, textArea, port, senderField.getText(), userList);
+                     client.start();
+                     tabPane.getSelectionModel().select(1);
+                     textField.requestFocus();
+                     stage.setTitle("방 :" + roomName);
+                     senderField.setEditable(false);
+                     randomGenerateNickBtn.setDisable(true);
+
+                 }
              }
          });
 
@@ -347,16 +364,21 @@ public class ClientApplication extends Application {
 
         // 방나가기
         quitRoomButton.setOnAction(e -> {
-            //disconnect 호출
-            textField.setText("");
-            textArea.setText("");
-            btn1.setDisable(false);
-            senderField.setEditable(true);
-            randomGenerateNickBtn.setDisable(false);
-            tabPane.getSelectionModel().select(0);
-            btn2.setDisable(true);
-
-            client.close();
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("방 나가기");
+            alert.setHeaderText("나가시겠습니까?");
+            if(alert.showAndWait().get() == ButtonType.OK) {
+                //disconnect 호출
+                textField.setText("");
+                textArea.setText("");
+                btn1.setDisable(false);
+                senderField.setEditable(true);
+                randomGenerateNickBtn.setDisable(false);
+                tabPane.getSelectionModel().select(0);
+                btn2.setDisable(true);
+                userList.getItems().clear();
+                client.close();
+            }
         });
     }
 
