@@ -83,6 +83,7 @@ public class ClientApplication extends Application {
         TextField senderField = new TextField();
         TextArea currentUserArea = new TextArea();
 
+        currentUserArea.setEditable(false);
         // 랜덤생성 닉네임
         Button randomGenerateNickBtn = new Button("랜덤 닉네임 생성");
         randomGenerateNickBtn.setOnAction(actionEvent -> senderField.setText(NicknameGenerator.randomNicknameGenerate()));
@@ -299,19 +300,28 @@ public class ClientApplication extends Application {
         // 접속 이벤트
         btn1.setOnAction(event -> {
             String roomName = roomList.getSelectionModel().getSelectedItem();
-            int port = roomMap.get(roomName);
             String nick = senderField.getText();
-
-             if (nick.isEmpty()) {
+             if (nick.isEmpty() || roomName.isEmpty()) {
+                 Alert alert = new Alert(Alert.AlertType.ERROR);
+                 alert.setTitle("경고");
+                 alert.setHeaderText(null);
+                 alert.setContentText("닉네임과 방을 확인해주세요.");
+                 alert.showAndWait();
                  senderField.requestFocus();
              } else {
-                 client = new Client(btn1, btn2, textArea, port, senderField.getText(), currentUserArea);
-                 client.start();
-                 tabPane.getSelectionModel().select(1);
-                 textField.requestFocus();
-                 stage.setTitle("방 :" + roomName);
-                 senderField.setEditable(false);
-                 randomGenerateNickBtn.setDisable(true);
+                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                 alert.setTitle("접속");
+                 alert.setHeaderText("접속하시겠습니까?");
+                 if(alert.showAndWait().get() == ButtonType.OK) {
+                     int port = roomMap.get(roomName);
+                     client = new Client(btn1, btn2, textArea, port, senderField.getText(), currentUserArea);
+                     client.start();
+                     tabPane.getSelectionModel().select(1);
+                     textField.requestFocus();
+                     stage.setTitle("방 :" + roomName);
+                     senderField.setEditable(false);
+                     randomGenerateNickBtn.setDisable(true);
+                 }
              }
          });
 
@@ -328,16 +338,21 @@ public class ClientApplication extends Application {
 
         // 방나가기
         quitRoomButton.setOnAction(e -> {
-            //disconnect 호출
-            textField.setText("");
-            textArea.setText("");
-            btn1.setDisable(false);
-            senderField.setEditable(true);
-            randomGenerateNickBtn.setDisable(false);
-            tabPane.getSelectionModel().select(0);
-            btn2.setDisable(true);
-
-            client.close();
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("방 나가기");
+            alert.setHeaderText("나가시겠습니까?");
+            if(alert.showAndWait().get() == ButtonType.OK) {
+                //disconnect 호출
+                textField.setText("");
+                textArea.setText("");
+                btn1.setDisable(false);
+                senderField.setEditable(true);
+                randomGenerateNickBtn.setDisable(false);
+                tabPane.getSelectionModel().select(0);
+                btn2.setDisable(true);
+                currentUserArea.setText("");
+                client.close();
+            }
         });
     }
 

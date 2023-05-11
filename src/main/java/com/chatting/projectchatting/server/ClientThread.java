@@ -22,6 +22,7 @@ public class ClientThread extends Thread {
     }
 
     public void run() {
+        boolean logout = false;
         try {
             inputStream = new ObjectInputStream(socket.getInputStream());
             outputStream = new ObjectOutputStream(socket.getOutputStream());
@@ -31,7 +32,9 @@ public class ClientThread extends Thread {
                     connectThread.setUserName(message.getSender(), socket);
                 }else if(message.getType() == MessageType.LOG_OUT){
                     System.out.println("LOGOUT  ----- ");
-                    this.disconnect(Message.outMessage());
+                    logout = true;
+                    disconnect(message);
+                    break;
                 }
 
                 connectThread.receiveAll(message);
@@ -39,7 +42,10 @@ public class ClientThread extends Thread {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            disconnect(Message.outMessage());
+            System.out.println("finally  ---  ");
+            if(logout == false) {
+                disconnect(Message.outMessage());
+            }
         }
     }
 
@@ -53,9 +59,9 @@ public class ClientThread extends Thread {
     }
 
     private void disconnect(Message message) {
-        connectThread.receiveAll(message);
         connectThread.getCurrentUserCounter().decrease();
         connectThread.disconnectSocket(socket);
+        connectThread.receiveAll(message);
     }
 
     public boolean isSame(Socket socket) {

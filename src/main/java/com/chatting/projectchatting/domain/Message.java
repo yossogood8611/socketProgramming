@@ -44,8 +44,8 @@ public class Message implements Serializable {
         return new Message(MessageType.ROOM_USER, null, "", currentUsers, LocalDateTime.now());
     }
 
-    public static Message logout(){
-        return new Message(MessageType.LOG_OUT, null, "", null, LocalDateTime.now());
+    public static Message logout(String sender){
+        return new Message(MessageType.LOG_OUT, sender,"님이 채팅방에 나갔습니다.", null, LocalDateTime.now());
     }
 
 

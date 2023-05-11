@@ -49,7 +49,7 @@ public class ConnectThread extends Thread {
 
     public void receiveAll(Message message){
         for (ChatUser user : connects) {
-            System.out.println("receiveAll" +user.getClientThread().getId());
+            System.out.println("receiveAll ------------- " +user.getClientThread().getId());
             user.getClientThread().receive(message);
         }
     }

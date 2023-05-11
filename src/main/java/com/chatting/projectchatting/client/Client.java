@@ -74,6 +74,6 @@ public class Client extends Thread{
 
     public void close(){
         System.out.println("Close --- ");
-        this.sender.send(Message.logout());
+        this.sender.send(Message.logout(userName));
     }
 }
