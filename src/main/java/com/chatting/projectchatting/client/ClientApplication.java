@@ -219,6 +219,10 @@ public class ClientApplication extends Application {
 
         //-----------------------------------------------------
 
+
+        textRoot.getChildren().addAll(textField, comboBox, btn2);
+        tab2Root.getChildren().addAll(currentUserArea, textArea, textRoot,macro,quitRoomButton);
+
         //-----------------------------------------------------
         // Tab 3: 설정
         Tab tab3 = new Tab("설정");
