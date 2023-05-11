@@ -7,12 +7,11 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.LinkedList;
 import java.util.List;
-import javafx.application.Platform;
+import java.util.stream.Collectors;
 
 public class ConnectThread extends Thread {
 
-    private final ChatRoomService chatRoomService = ChatRoomService.getInstance();
-    private final List<ClientThread> connects = new LinkedList<>();
+    private final List<ChatUser> connects = new LinkedList<>();
     private final ServerSocket ss;
     private final CurrentUserCounter currentUserCounter;
 
@@ -39,10 +38,8 @@ public class ConnectThread extends Thread {
                 if (socket.isConnected()){
                     ClientThread clientThread = new ClientThread(socket, this);
                     clientThread.start();
-                    Platform.runLater(() -> {
-                        connects.add(clientThread);
-                        firstMessage(Message.firstMessage());
-                    });
+                    new CurrentUserThread(this).start();
+                    connects.add(new ChatUser(null, clientThread));
                 }
             }
         } catch (IOException e) {
@@ -51,34 +48,33 @@ public class ConnectThread extends Thread {
     }
 
     public void receiveAll(Message message){
-        for (ClientThread connect : connects) {
-            System.out.println("ConnectThread receive All -- " + connect.getId());
-            connect.receive(message);
+        for (ChatUser user : connects) {
+            user.getClientThread().receive(message);
         }
     }
 
-    private void firstMessage(Message message){
-        currentUserCounter.increase();
-        receiveAll(message);
+    public void receiveCurrentUsers() {
+        List<String> currentUsers = connects.stream()
+                .filter(ChatUser::isOk)
+                .map(ChatUser::getUsername)
+                .collect(Collectors.toList());
+        receiveAll(Message.current(currentUsers));
     }
 
-
-    public void roomInSocket(ClientThread clientThread, Message message) {
-        chatRoomService.roomIn(1, clientThread);
-        clientThread.receive(message);
+    public void setUserName(String userName, Socket socket) {
+        for (ChatUser user : connects) {
+            if (user.getClientThread().isSame(socket)) {
+                user.setUsername(userName);
+            }
+        }
     }
+
 
     public CurrentUserCounter getCurrentUserCounter() {
         return currentUserCounter;
     }
 
     public void disconnectSocket(Socket socket) {
-        try {
-            socket.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
         connects.remove(socket);
-        System.out.println("ConnectThread " + connects.toString());
     }
 }

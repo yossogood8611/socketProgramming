@@ -6,9 +6,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javafx.scene.layout.StackPane;
+import java.util.function.Function;
+
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 
@@ -45,6 +47,7 @@ public class ClientApplication extends Application {
     private RadioButton pinkButton;
     private RadioButton greenButton;
     private RadioButton blueButton;
+    private RadioButton whiteButton;
 
     private Slider opacitySlider;
 
@@ -77,6 +80,7 @@ public class ClientApplication extends Application {
         Text text = new Text("닉네임");
         TextArea textArea = new TextArea();
         TextField senderField = new TextField();
+        TextArea currentUserArea = new TextArea();
 
         // 랜덤생성 닉네임
         Button randomGenerateNickBtn = new Button("랜덤 닉네임 생성");
@@ -116,6 +120,7 @@ public class ClientApplication extends Application {
 
         TextField textField = new TextField();
         textArea.setEditable(false);
+        textArea.setPrefSize(500,350);
         btn2.setDisable(true);
         tab2Root.setSpacing(10);
 
@@ -123,7 +128,7 @@ public class ClientApplication extends Application {
 
         // 매크로
         HBox macro = new HBox();
-        macro.setSpacing(20);
+        macro.setSpacing(5);
         Button okBtn = new Button("네.");
         Button noBtn = new Button("아니요.");
         Button thanksBtn = new Button("감사합니다.");
@@ -152,6 +157,9 @@ public class ClientApplication extends Application {
             String selectedEmoticon = comboBox.getValue();
             client.send(senderField.getText(), selectedEmoticon);
         });
+
+        textRoot.getChildren().addAll(textField, comboBox, btn2);
+        tab2Root.getChildren().addAll( currentUserArea, textArea, textRoot,macro,quitRoomButton);
 
         exportBtn.setOnAction(actionEvent -> {
             String contents = textArea.getText().toString();
@@ -219,6 +227,7 @@ public class ClientApplication extends Application {
         tab3Root.setSpacing(10);
 
         Text colorText = new Text("Change Background Color");
+        colorText.setFont(Font.font("Arial",FontWeight.BOLD, 15));
         ToggleGroup colorGroup = new ToggleGroup();
         pinkButton = new RadioButton("pink color");
         pinkButton.setToggleGroup(colorGroup);
@@ -229,9 +238,15 @@ public class ClientApplication extends Application {
         blueButton = new RadioButton("blue color");
         blueButton.setToggleGroup(colorGroup);
         blueButton.setOnAction(e -> onChangeBackgroundColor(Color.web("#E8F1FE"), stage));
+        whiteButton = new RadioButton("white color");
+        whiteButton.setToggleGroup(colorGroup);
+        whiteButton.setOnAction(e -> onChangeBackgroundColor(Color.web("#FFFFFF"), stage));
+        whiteButton.setSelected(true);
 
         Text opacityText = new Text("Change Background Opacity");
+        opacityText.setFont(Font.font("Arial",FontWeight.BOLD, 15));
         opacitySlider = new Slider(0,100,100);
+        opacitySlider.setMaxWidth(200);
         opacitySlider.valueProperty().addListener(
                 new ChangeListener<Number>() {
                     public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
@@ -241,6 +256,7 @@ public class ClientApplication extends Application {
         );
 
         Text fontWeightText = new Text("Change Font Size");
+        fontWeightText.setFont(Font.font("Arial",FontWeight.BOLD, 15));
         ToggleGroup fontWeightGroup = new ToggleGroup();
         smallTextButton = new RadioButton("small size");
         smallTextButton.setToggleGroup(fontWeightGroup);
@@ -251,10 +267,10 @@ public class ClientApplication extends Application {
         largeTextButton = new RadioButton("large size");
         largeTextButton.setToggleGroup(fontWeightGroup);
         largeTextButton.setOnAction(e->textArea.setFont(Font.font("System", FontWeight.NORMAL, 20)));
+        mediumTextButton.setSelected(true);
 
-
-        tab3Root.getChildren().addAll(colorText,pinkButton, greenButton, blueButton, opacityText, opacitySlider, fontWeightText, smallTextButton, mediumTextButton, largeTextButton);
-
+        tab3Root.getChildren().addAll(colorText,whiteButton, pinkButton, greenButton, blueButton, new Region(),opacityText, opacitySlider, new Region(),fontWeightText, smallTextButton, mediumTextButton, largeTextButton);
+        tab3Root.setSpacing(10);
         tab3.setContent(tab3Root);
         //----------------------------------------------------
 
@@ -281,7 +297,7 @@ public class ClientApplication extends Application {
              if (nick.isEmpty()) {
                  senderField.requestFocus();
              } else {
-                 client = new Client(btn1, btn2, textArea, port);
+                 client = new Client(btn1, btn2, textArea, port, senderField.getText(), currentUserArea);
                  client.start();
                  tabPane.getSelectionModel().select(1);
                  textField.requestFocus();
@@ -312,7 +328,7 @@ public class ClientApplication extends Application {
             randomGenerateNickBtn.setDisable(false);
             tabPane.getSelectionModel().select(0);
             btn2.setDisable(true);
-            client.close();
+//            client.close();
         });
     }
 
