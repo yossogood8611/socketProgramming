@@ -150,7 +150,7 @@ public class ClientApplication extends Application {
             client.send(senderField.getText(), selectedEmoticon);
         });
 
-        textRoot.getChildren().addAll(textField, comboBox, btn2);
+        textRoot.getChildren().addAll(textField, comboBox, btn2, exportBtn, importBtn);
         tab2Root.getChildren().addAll( currentUserArea, textArea, textRoot,macro,quitRoomButton);
 
         exportBtn.setOnAction(actionEvent -> {
@@ -170,7 +170,8 @@ public class ClientApplication extends Application {
                 System.out.println("저장 완료");
                 writer.write(contents);
                 writer.close();
-                textArea.setText(textArea.getText() + "\n" + "대화 내용 저장 완료 : " + fileName);
+//                textArea.setText(textArea.getText() + "\n" + "대화 내용 저장 완료 : " + fileName);
+                textArea.appendText("대화 내용 저장 완료 : " + fileName);
 
             } catch (IOException e) {
                 throw new RuntimeException(e);
