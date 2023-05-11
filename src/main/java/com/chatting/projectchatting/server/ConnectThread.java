@@ -40,6 +40,7 @@ public class ConnectThread extends Thread {
                     clientThread.start();
                     new CurrentUserThread(this).start();
                     connects.add(new ChatUser(null, clientThread));
+                    currentUserCounter.increase();
                 }
             }
         } catch (IOException e) {

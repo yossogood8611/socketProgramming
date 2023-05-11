@@ -81,7 +81,8 @@ public class ClientApplication extends Application {
         Text text = new Text("닉네임");
         TextArea textArea = new TextArea();
         TextField senderField = new TextField();
-        TextArea currentUserArea = new TextArea();
+        ListView<String> userList = new ListView<>();
+        userList.setPrefSize(100, 100);
 
         // 랜덤생성 닉네임
         Button randomGenerateNickBtn = new Button("랜덤 닉네임 생성");
@@ -140,6 +141,7 @@ public class ClientApplication extends Application {
         Button hardBtn = new Button("고생하셨습니다.");
         Button exportBtn = new Button("내보내기");
         Button importBtn = new Button("가져오기");
+        Button dropOutBtn = new Button("강퇴 요청");
         okBtn.setOnAction(actionEvent -> client.send(senderField.getText(), okBtn.getText()));
         noBtn.setOnAction(actionEvent -> client.send(senderField.getText(), noBtn.getText()));
         thanksBtn.setOnAction(actionEvent -> client.send(senderField.getText(), thanksBtn.getText()));
@@ -220,8 +222,8 @@ public class ClientApplication extends Application {
         //-----------------------------------------------------
 
 
-        textRoot.getChildren().addAll(textField, comboBox, btn2);
-        tab2Root.getChildren().addAll(currentUserArea, textArea, textRoot,macro,quitRoomButton);
+        textRoot.getChildren().addAll(textField, comboBox, btn2, dropOutBtn);
+        tab2Root.getChildren().addAll(userList, textArea, textRoot,macro,quitRoomButton);
 
         //-----------------------------------------------------
         // Tab 3: 설정
@@ -294,11 +296,11 @@ public class ClientApplication extends Application {
             String roomName =roomList.getSelectionModel().getSelectedItem();
             int port = roomMap.get(roomName); 
             String nick = senderField.getText();
-             
-             if (nick.isEmpty()) {
+
+            if (nick.isEmpty()) {
                  senderField.requestFocus();
              } else {
-                 client = new Client(btn1, btn2, textArea, port, senderField.getText(), currentUserArea);
+                 client = new Client(btn1, btn2, textArea, port, senderField.getText(), userList);
                  client.start();
                  tabPane.getSelectionModel().select(1);
                  textField.requestFocus();

@@ -14,7 +14,6 @@ public class Message implements Serializable {
     private final List<String> currentUsers;
     private final LocalDateTime date;
 
-
     public Message(MessageType type, String sender, String text, List<String> currentUsers, LocalDateTime date) {
         validateTextLength(text);
         this.type = type;
@@ -42,6 +41,10 @@ public class Message implements Serializable {
 
     public static Message current(List<String> currentUsers){
         return new Message(MessageType.ROOM_USER, null, "", currentUsers, LocalDateTime.now());
+    }
+
+    public static Message out(String sender, String userName) {
+        return new Message(MessageType.OUT, sender, userName, null,LocalDateTime.now());
     }
 
 

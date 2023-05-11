@@ -5,5 +5,7 @@ public enum MessageType {
     Event,
 
     ROOM_IN,
-    ROOM_USER;
+    ROOM_USER,
+
+    OUT;
 }

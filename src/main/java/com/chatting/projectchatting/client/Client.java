@@ -1,11 +1,19 @@
 package com.chatting.projectchatting.client;
 
 import com.chatting.projectchatting.domain.Message;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.List;
+import javafx.application.Platform;
+import javafx.beans.value.ObservableListValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 
 public class Client extends Thread{
@@ -19,12 +27,15 @@ public class Client extends Thread{
     private final TextArea textArea;
     private final int port;
 
-    private final TextArea currentUserArea;
-
     private final String userName;
 
-
-    public Client(Button button1, Button button2, TextArea textArea, int port, String userName, TextArea currentUserArea) {
+    private final ListView<String> userList;
+    public Client(Button button1,
+                  Button button2,
+                  TextArea textArea,
+                  int port,
+                  String userName,
+                  ListView<String> userList) {
         this.sender = null;
         this.receiver = null;
         this.button1 = button1;
@@ -32,7 +43,7 @@ public class Client extends Thread{
         this.textArea = textArea;
         this.port = port;
         this.userName = userName;
-        this.currentUserArea = currentUserArea;
+        this.userList = userList;
     }
 
     @Override
@@ -64,11 +75,13 @@ public class Client extends Thread{
         textArea.setText(textArea.getText() + ProfanityFilter.filter(getText) +"\n");
     }
 
+
     public void setCurrentUser(List<String> currentUser) {
-        StringBuilder sb = new StringBuilder();
-        for (String userName : currentUser) {
-            sb.append(userName).append("\n");
-        }
-        currentUserArea.setText(sb.toString());
+        userList.getItems().clear();
+        Platform.runLater(() -> {
+            for (String user : currentUser) {
+                userList.getItems().add(user);
+            }
+        });
     }
 }
