@@ -58,11 +58,8 @@ public class ClientThread extends Thread {
         connectThread.disconnectSocket(socket);
     }
 
-
     public boolean isSame(Socket socket) {
         return this.socket.equals(socket);
     }
-
-
 
 }

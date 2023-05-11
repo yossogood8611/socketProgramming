@@ -103,15 +103,6 @@ public class ClientApplication extends Application {
         // Tab 2: 채팅방
         Tab tab2 = new Tab("채팅방");
         VBox tab2Root = new VBox();
-
-        WebView webView = new WebView();
-        WebEngine webEngine = webView.getEngine();
-        Path filePath = Path.of("test.html");
-        String htmlContent = Files.readString(filePath, StandardCharsets.UTF_8);
-        webEngine.loadContent(htmlContent);
-
-        StackPane stackPane = new StackPane(webView);
-
         HBox textRoot = new HBox();
         tab2Root.setPrefSize(600, 500);
         tab2Root.setSpacing(10);
@@ -284,8 +275,17 @@ public class ClientApplication extends Application {
         // 탭을 닫을 수 없게 설정
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
+        Tab tab4 = new Tab("검색");
+        VBox tab4Root = new VBox();
+
+        WebView webView = new WebView();
+        WebEngine webEngine = webView.getEngine();
+        webEngine.load("https://www.google.com");
+
+        tab4Root.getChildren().addAll(webView);
+        tab4.setContent(tab4Root);
         // 탭 추가
-        tabPane.getTabs().addAll(tab1, tab2, tab3);
+        tabPane.getTabs().addAll(tab1, tab2, tab3,tab4);
 
         Scene scene = new Scene(tabPane);
         stage.setScene(scene);
