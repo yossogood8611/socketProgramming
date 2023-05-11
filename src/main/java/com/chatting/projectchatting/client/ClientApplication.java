@@ -163,9 +163,6 @@ public class ClientApplication extends Application {
             client.send(senderField.getText(), selectedEmoticon);
         });
 
-        textRoot.getChildren().addAll(textField, comboBox, btn2);
-        tab2Root.getChildren().addAll(currentUserArea, textArea, textRoot,macro,quitRoomButton);
-
         exportBtn.setOnAction(actionEvent -> {
             String contents = textArea.getText().toString();
             LocalDateTime now = LocalDateTime.now();
@@ -216,13 +213,15 @@ public class ClientApplication extends Application {
             textField.setText("");
         });
 
-        textRoot.getChildren().addAll(textField, comboBox, btn2, exportBtn, importBtn);
-        tab2Root.getChildren().addAll( textArea, textRoot,macro,quitRoomButton);
         tab2Root.setPadding(new Insets(10, 10, 10, 10));
       
         tab2.setContent(tab2Root);
 
         //-----------------------------------------------------
+
+
+        textRoot.getChildren().addAll(textField, comboBox, btn2);
+        tab2Root.getChildren().addAll(currentUserArea, textArea, textRoot,macro,quitRoomButton);
 
         //-----------------------------------------------------
         // Tab 3: 설정
@@ -253,7 +252,11 @@ public class ClientApplication extends Application {
         opacitySlider = new Slider(0,100,100);
         opacitySlider.setMaxWidth(200);
         opacitySlider.valueProperty().addListener(
-                (observable, oldValue, newValue) -> stage.setOpacity(newValue.doubleValue() / 100)
+                new ChangeListener<Number>() {
+                    public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                        stage.setOpacity(newValue.doubleValue() / 100);
+                    }
+                }
         );
 
         Text fontWeightText = new Text("Change Font Size");
