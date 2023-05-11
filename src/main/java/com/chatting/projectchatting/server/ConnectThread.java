@@ -50,6 +50,7 @@ public class ConnectThread extends Thread {
 
     public void receiveAll(Message message){
         for (ChatUser user : connects) {
+            System.out.println("receiveAll" +user.getClientThread().getId());
             user.getClientThread().receive(message);
         }
     }
@@ -76,6 +77,10 @@ public class ConnectThread extends Thread {
     }
 
     public void disconnectSocket(Socket socket) {
-        connects.remove(socket);
+        for (ChatUser user : connects) {
+            if(user.getClientThread().isSame(socket)){
+                connects.remove(user);
+            }
+        }
     }
 }

@@ -48,6 +48,20 @@ public class ServerApplication extends Application {
         ListView<String> roomList = new ListView<>();
         ObservableList<String> rooms = FXCollections.observableArrayList();
 
+        txtRoomName.setOnAction(actionEvent -> {
+            String str = txtRoomName.getText();
+            int count = roomNameList.size();
+            roomNameList.add(str);
+            boolean dupChk = (count != roomNameList.size());
+
+            if(!str.isEmpty() && dupChk){
+                setRoomEvent(roomList, rooms, str);
+                txtRoomName.setText("");
+            } else{
+                txtRoomName.requestFocus();
+            }
+        });
+
         btn1.setOnAction(event -> {
             String str = txtRoomName.getText();
             int count = roomNameList.size();
@@ -70,8 +84,6 @@ public class ServerApplication extends Application {
         stage.setTitle("서버");
         stage.show();
     }
-
-
     private void setRoomEvent(ListView<String> roomList, ObservableList<String> rooms,String str) {
         try {
             ServerRoom serverRoom = new ServerRoom();

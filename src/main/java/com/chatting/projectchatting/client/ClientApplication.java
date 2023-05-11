@@ -2,8 +2,6 @@ package com.chatting.projectchatting.client;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
@@ -21,11 +19,13 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import java.io.*;
 
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
+
+import javafx.scene.layout.StackPane;
 import java.util.function.Function;
 
 import javafx.scene.web.WebEngine;
@@ -68,7 +68,7 @@ public class ClientApplication extends Application {
         stage.setOnCloseRequest(e->{
             System.exit(0);
         });
-        
+
         TabPane tabPane = new TabPane();
         //-----------------------------------------------------
         // Tab 1: 방 선택
@@ -77,7 +77,7 @@ public class ClientApplication extends Application {
         Button btnRefrsh = new Button("새로고침");
         Button btn1 = new Button("접속");
         Button btn2 = new Button("데이터 전송");
-    
+
         Text text = new Text("닉네임");
         TextArea textArea = new TextArea();
         TextField senderField = new TextField();
@@ -104,15 +104,6 @@ public class ClientApplication extends Application {
         // Tab 2: 채팅방
         Tab tab2 = new Tab("채팅방");
         VBox tab2Root = new VBox();
-
-        WebView webView = new WebView();
-        WebEngine webEngine = webView.getEngine();
-        Path filePath = Path.of("test.html");
-        String htmlContent = Files.readString(filePath, StandardCharsets.UTF_8);
-        webEngine.loadContent(htmlContent);
-
-        StackPane stackPane = new StackPane(webView);
-        
         HBox textRoot = new HBox();
         tab2Root.setPrefSize(600, 500);
         tab2Root.setSpacing(10);
@@ -127,10 +118,6 @@ public class ClientApplication extends Application {
         tab2Root.setSpacing(10);
 
         Button quitRoomButton = new Button("방 나가기");
-        quitRoomButton.setOnAction(e -> {
-            //disconnect 호출
-            textField.setText("");
-        });
 
         // 매크로
         HBox macro = new HBox();
@@ -139,6 +126,9 @@ public class ClientApplication extends Application {
         Button noBtn = new Button("아니요.");
         Button thanksBtn = new Button("감사합니다.");
         Button hardBtn = new Button("고생하셨습니다.");
+        Button afterCallBtn = new Button("잠시 후 연락드리겠습니다.");
+        Button callBtn = new Button("전화주세요.");
+        Button restBtn = new Button("쉬었다가 합시다.");
         Button exportBtn = new Button("내보내기");
         Button importBtn = new Button("가져오기");
         Button dropOutBtn = new Button("강퇴 요청");
@@ -146,7 +136,10 @@ public class ClientApplication extends Application {
         noBtn.setOnAction(actionEvent -> client.send(senderField.getText(), noBtn.getText()));
         thanksBtn.setOnAction(actionEvent -> client.send(senderField.getText(), thanksBtn.getText()));
         hardBtn.setOnAction(actionEvent -> client.send(senderField.getText(), hardBtn.getText()));
-        macro.getChildren().addAll(okBtn, noBtn, thanksBtn, hardBtn);
+        afterCallBtn.setOnAction(actionEvent -> client.send(senderField.getText(), afterCallBtn.getText()));
+        restBtn.setOnAction(actionEvent -> client.send(senderField.getText(), restBtn.getText()));
+        callBtn.setOnAction(actionEvent -> client.send(senderField.getText(), callBtn.getText()));
+        macro.getChildren().addAll(okBtn, noBtn, thanksBtn, hardBtn, afterCallBtn,callBtn,  restBtn);
         //매크로 end
 
 
@@ -159,11 +152,14 @@ public class ClientApplication extends Application {
                 "\uD83D\uDE0D", // Heart eyes face
                 "\uD83D\uDE2D"  // Crying face
         );
-      
+
         comboBox.setOnAction(event -> {
             String selectedEmoticon = comboBox.getValue();
             client.send(senderField.getText(), selectedEmoticon);
         });
+
+        textRoot.getChildren().addAll(textField, comboBox, btn2, dropOutBtn);
+        tab2Root.getChildren().addAll(userList, textArea, textRoot,macro,quitRoomButton);
 
         exportBtn.setOnAction(actionEvent -> {
             String contents = textArea.getText().toString();
@@ -182,7 +178,8 @@ public class ClientApplication extends Application {
                 System.out.println("저장 완료");
                 writer.write(contents);
                 writer.close();
-                textArea.setText(textArea.getText() + "\n" + "대화 내용 저장 완료 : " + fileName);
+//                textArea.setText(textArea.getText() + "\n" + "대화 내용 저장 완료 : " + fileName);
+                textArea.appendText("대화 내용 저장 완료 : " + fileName);
 
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -215,17 +212,12 @@ public class ClientApplication extends Application {
             textField.setText("");
         });
 
+//        textRoot.getChildren().addAll(textField, comboBox, btn2, exportBtn, importBtn);
+//        tab2Root.getChildren().addAll( textArea, textRoot,macro,quitRoomButton);
         tab2Root.setPadding(new Insets(10, 10, 10, 10));
-      
+
         tab2.setContent(tab2Root);
 
-        //-----------------------------------------------------
-
-
-        textRoot.getChildren().addAll(textField, comboBox, btn2, dropOutBtn);
-        tab2Root.getChildren().addAll(userList, textArea, textRoot,macro,quitRoomButton);
-
-        //-----------------------------------------------------
         // Tab 3: 설정
         Tab tab3 = new Tab("설정");
         VBox tab3Root = new VBox();
@@ -275,7 +267,13 @@ public class ClientApplication extends Application {
         largeTextButton.setOnAction(e->textArea.setFont(Font.font("System", FontWeight.NORMAL, 20)));
         mediumTextButton.setSelected(true);
 
-        tab3Root.getChildren().addAll(colorText,whiteButton, pinkButton, greenButton, blueButton, new Region(),opacityText, opacitySlider, new Region(),fontWeightText, smallTextButton, mediumTextButton, largeTextButton);
+        Image img = new Image("file:./pngegg.png");
+        ImageView imgView = new ImageView();
+        imgView.setImage(img);
+        imgView.setFitWidth(100);
+        imgView.setFitHeight(100);
+
+        tab3Root.getChildren().addAll(colorText,whiteButton, pinkButton, greenButton, blueButton, new Region(),opacityText, opacitySlider, new Region(),fontWeightText, smallTextButton, mediumTextButton, largeTextButton, imgView);
         tab3Root.setSpacing(10);
         tab3.setContent(tab3Root);
         //----------------------------------------------------
@@ -283,21 +281,33 @@ public class ClientApplication extends Application {
         // 탭을 닫을 수 없게 설정
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
+        Tab tab4 = new Tab("검색");
+        VBox tab4Root = new VBox();
+
+        WebView webView = new WebView();
+        WebEngine webEngine = webView.getEngine();
+        webEngine.load("https://www.google.com");
+
+        tab4Root.getChildren().addAll(webView);
+        tab4.setContent(tab4Root);
         // 탭 추가
-        tabPane.getTabs().addAll(tab1, tab2, tab3);
+        tabPane.getTabs().addAll(tab1, tab2, tab3,tab4);
 
         Scene scene = new Scene(tabPane);
         stage.setScene(scene);
         stage.setTitle("클라이언트");
         stage.show();
 
-        // 접속 이벤트 
+
+        // 이벤트 리스너
+
+        // 접속 이벤트
         btn1.setOnAction(event -> {
-            String roomName =roomList.getSelectionModel().getSelectedItem();
-            int port = roomMap.get(roomName); 
+            String roomName = roomList.getSelectionModel().getSelectedItem();
+            int port = roomMap.get(roomName);
             String nick = senderField.getText();
 
-            if (nick.isEmpty()) {
+             if (nick.isEmpty()) {
                  senderField.requestFocus();
              } else {
                  client = new Client(btn1, btn2, textArea, port, senderField.getText(), userList);
@@ -305,6 +315,8 @@ public class ClientApplication extends Application {
                  tabPane.getSelectionModel().select(1);
                  textField.requestFocus();
                  stage.setTitle("방 :" + roomName);
+                 senderField.setEditable(false);
+                 randomGenerateNickBtn.setDisable(true);
              }
          });
 
@@ -318,6 +330,20 @@ public class ClientApplication extends Application {
         btnRefrsh.setOnAction(event -> {
             this.setRoom(roomList, rooms);
        });
+
+        // 방나가기
+        quitRoomButton.setOnAction(e -> {
+            //disconnect 호출
+            textField.setText("");
+            textArea.setText("");
+            btn1.setDisable(false);
+            senderField.setEditable(true);
+            randomGenerateNickBtn.setDisable(false);
+            tabPane.getSelectionModel().select(0);
+            btn2.setDisable(true);
+
+            client.close();
+        });
     }
 
     /**
@@ -342,6 +368,6 @@ public class ClientApplication extends Application {
             r.close();
         } catch (Exception e) {
             e.printStackTrace();
-        } 
+        }
     }
 }

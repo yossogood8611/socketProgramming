@@ -29,7 +29,11 @@ public class ClientThread extends Thread {
                 Message message = (Message) inputStream.readObject();
                 if (message.getType() == MessageType.ROOM_IN){
                     connectThread.setUserName(message.getSender(), socket);
+                }else if(message.getType() == MessageType.LOG_OUT){
+                    System.out.println("LOGOUT  ----- ");
+                    this.disconnect(Message.outMessage());
                 }
+
                 connectThread.receiveAll(message);
             }
         } catch (Exception e) {
@@ -54,8 +58,8 @@ public class ClientThread extends Thread {
         connectThread.disconnectSocket(socket);
     }
 
-
     public boolean isSame(Socket socket) {
         return this.socket.equals(socket);
     }
+
 }
