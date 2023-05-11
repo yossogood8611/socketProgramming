@@ -77,8 +77,8 @@ public class Client extends Thread{
 
 
     public void setCurrentUser(List<String> currentUser) {
-        userList.getItems().clear();
         Platform.runLater(() -> {
+            userList.getItems().clear();
             for (String user : currentUser) {
                 userList.getItems().add(user);
             }
@@ -88,5 +88,13 @@ public class Client extends Thread{
     public void close(){
         System.out.println("Close --- ");
         this.sender.send(Message.logout());
+    }
+
+
+    public void out(Message message){
+        Platform.runLater(() -> {
+            this.userList.getItems().clear();
+            this.textArea.setText(message.getSender() + "에 의해 강퇴되었습니다.");
+        });
     }
 }

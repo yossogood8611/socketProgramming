@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 
 public class Message implements Serializable {
     private static final int MAX_LENGTH = 255;
@@ -70,6 +71,7 @@ public class Message implements Serializable {
     }
 
     private void validateTextLength(String text) {
+        if (Objects.isNull(text)) return;
         if (text.length() > MAX_LENGTH) {
             throw new RuntimeException();
         }

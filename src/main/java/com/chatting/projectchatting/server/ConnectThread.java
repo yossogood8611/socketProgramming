@@ -7,6 +7,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ConnectThread extends Thread {
@@ -82,5 +83,22 @@ public class ConnectThread extends Thread {
                 connects.remove(user);
             }
         }
+    }
+
+    private Optional<ClientThread> findSocketByUserName(String userName) {
+        return connects.stream()
+                .filter(user -> user.isSameUserName(userName))
+                .map(ChatUser::getClientThread)
+                .findFirst();
+    }
+
+    public void dropOutUser(Message message) {
+        findSocketByUserName(message.getText())
+                .ifPresent((clientThread) -> {
+                    clientThread.receive(Message.out(message.getSender(), message.getText()));
+                    currentUserCounter.decrease();
+                    disconnectSocket(clientThread.getSocket());
+                    receiveAll(Message.text(message.getSender(), "님이 [" +  message.getText() + "]님을 강퇴하였습니다."));
+                });
     }
 }

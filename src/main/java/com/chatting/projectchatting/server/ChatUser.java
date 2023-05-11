@@ -26,4 +26,14 @@ public class ChatUser {
     public void setUsername(String username) {
         this.username = username;
     }
+
+    public boolean isSameUserName(String username) {
+        if (Objects.isNull(username) || username.isEmpty()) {
+            return false;
+        }
+        return this.username.equals(username);
+    }
+
+
+
 }

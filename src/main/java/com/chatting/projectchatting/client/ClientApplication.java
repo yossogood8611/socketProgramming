@@ -1,7 +1,10 @@
 package com.chatting.projectchatting.client;
+import com.chatting.projectchatting.domain.Message;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
@@ -104,6 +107,7 @@ public class ClientApplication extends Application {
         // Tab 2: 채팅방
         Tab tab2 = new Tab("채팅방");
         VBox tab2Root = new VBox();
+
         HBox textRoot = new HBox();
         tab2Root.setPrefSize(600, 500);
         tab2Root.setSpacing(10);
@@ -158,8 +162,9 @@ public class ClientApplication extends Application {
             client.send(senderField.getText(), selectedEmoticon);
         });
 
-        textRoot.getChildren().addAll(textField, comboBox, btn2, dropOutBtn);
-        tab2Root.getChildren().addAll(userList, textArea, textRoot,macro,quitRoomButton);
+
+        textRoot.getChildren().addAll(textField, comboBox, btn2, exportBtn, importBtn, dropOutBtn);
+        tab2Root.getChildren().addAll( userList, textArea, textRoot,macro,quitRoomButton);
 
         exportBtn.setOnAction(actionEvent -> {
             String contents = textArea.getText().toString();
@@ -203,6 +208,15 @@ public class ClientApplication extends Application {
                 } catch (IOException e){
                     e.printStackTrace();
                 }
+            }
+        });
+
+        dropOutBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                String userName = userList.getSelectionModel().getSelectedItem();
+                String sender = senderField.getText();
+                client.send(Message.out(sender, userName));
             }
         });
 
