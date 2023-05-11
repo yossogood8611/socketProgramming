@@ -324,9 +324,8 @@ public class ClientApplication extends Application {
 
         // 접속 이벤트
         btn1.setOnAction(event -> {
-            String roomName = roomList.getSelectionModel().getSelectedItem();
             String nick = senderField.getText();
-             if (nick.isEmpty() || roomName.isEmpty()) {
+             if (nick.isEmpty() || roomList.getSelectionModel().isEmpty()) {
                  Alert alert = new Alert(Alert.AlertType.ERROR);
                  alert.setTitle("경고");
                  alert.setHeaderText(null);
@@ -338,6 +337,7 @@ public class ClientApplication extends Application {
                  alert.setTitle("접속");
                  alert.setHeaderText("접속하시겠습니까?");
                  if(alert.showAndWait().get() == ButtonType.OK) {
+                     String roomName = roomList.getSelectionModel().getSelectedItem();
                      int port = roomMap.get(roomName);
                      client = new Client(btn1, btn2, textArea, port, senderField.getText(), userList);
                      client.start();
