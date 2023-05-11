@@ -24,9 +24,14 @@ public class Receiver extends Thread{
                 try {
                     Message message = (Message) inputStream.readObject();
                     if (Objects.nonNull(message)) {
-                        if (message.getType() == MessageType.ROOM_USER) {
-                            client.setCurrentUser(message.getCurrentUsers());
-                            continue;
+                        switch (message.getType()){
+                            case ROOM_USER:
+                                client.setCurrentUser(message.getCurrentUsers());
+                                continue;
+                            case OUT:
+                                client.out(message);
+                                continue;
+                            default: break;
                         }
                         client.receiveMessage(message);
                     }

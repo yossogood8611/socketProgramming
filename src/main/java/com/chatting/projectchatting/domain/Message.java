@@ -4,10 +4,11 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 
 public class Message implements Serializable {
     private static final int MAX_LENGTH = 255;
-    
+
     private final MessageType type;
     private final String sender;
     private final String text;
@@ -44,7 +45,11 @@ public class Message implements Serializable {
     }
 
     public static Message out(String sender, String userName) {
-        return new Message(MessageType.OUT, sender, userName, null,LocalDateTime.now());
+        return new Message(MessageType.OUT, sender, userName, null, LocalDateTime.now());
+
+    }
+    public static Message logout(){
+        return new Message(MessageType.LOG_OUT, null, "", null, LocalDateTime.now());
     }
 
 
@@ -65,6 +70,7 @@ public class Message implements Serializable {
     }
 
     private void validateTextLength(String text) {
+        if (Objects.isNull(text)) return;
         if (text.length() > MAX_LENGTH) {
             throw new RuntimeException();
         }
