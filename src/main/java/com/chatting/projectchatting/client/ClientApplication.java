@@ -211,17 +211,13 @@ public class ClientApplication extends Application {
             textField.setText("");
         });
 
-        textRoot.getChildren().addAll(textField, comboBox, btn2, exportBtn, importBtn);
-        tab2Root.getChildren().addAll( textArea, textRoot,macro,quitRoomButton);
+//        textRoot.getChildren().addAll(textField, comboBox, btn2, exportBtn, importBtn);
+//        tab2Root.getChildren().addAll( textArea, textRoot,macro,quitRoomButton);
         tab2Root.setPadding(new Insets(10, 10, 10, 10));
 
         tab2.setContent(tab2Root);
 
         //-----------------------------------------------------
-
-
-        textRoot.getChildren().addAll(textField, comboBox, btn2);
-        tab2Root.getChildren().addAll(currentUserArea, textArea, textRoot,macro,quitRoomButton);
 
         //-----------------------------------------------------
         // Tab 3: 설정
@@ -332,7 +328,8 @@ public class ClientApplication extends Application {
             randomGenerateNickBtn.setDisable(false);
             tabPane.getSelectionModel().select(0);
             btn2.setDisable(true);
-//            client.close();
+
+            client.close();
         });
     }
 

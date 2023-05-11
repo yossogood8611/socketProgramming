@@ -7,7 +7,7 @@ import java.util.List;
 
 public class Message implements Serializable {
     private static final int MAX_LENGTH = 255;
-    
+
     private final MessageType type;
     private final String sender;
     private final String text;
@@ -42,6 +42,10 @@ public class Message implements Serializable {
 
     public static Message current(List<String> currentUsers){
         return new Message(MessageType.ROOM_USER, null, "", currentUsers, LocalDateTime.now());
+    }
+
+    public static Message logout(){
+        return new Message(MessageType.LOG_OUT, null, "", null, LocalDateTime.now());
     }
 
 

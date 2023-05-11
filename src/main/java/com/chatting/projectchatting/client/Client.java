@@ -71,4 +71,9 @@ public class Client extends Thread{
         }
         currentUserArea.setText(sb.toString());
     }
+
+    public void close(){
+        System.out.println("Close --- ");
+        this.sender.send(Message.logout());
+    }
 }
