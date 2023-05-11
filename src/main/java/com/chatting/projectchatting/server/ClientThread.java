@@ -1,6 +1,7 @@
 package com.chatting.projectchatting.server;
 
 import com.chatting.projectchatting.domain.Message;
+import com.chatting.projectchatting.domain.MessageType;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -26,6 +27,9 @@ public class ClientThread extends Thread {
             outputStream = new ObjectOutputStream(socket.getOutputStream());
             while (!Thread.currentThread().isInterrupted()) {
                 Message message = (Message) inputStream.readObject();
+                if (message.getType() == MessageType.ROOM_IN){
+                    connectThread.setUserName(message.getSender(), socket);
+                }
                 connectThread.receiveAll(message);
             }
         } catch (Exception e) {
@@ -50,4 +54,8 @@ public class ClientThread extends Thread {
         connectThread.disconnectSocket(socket);
     }
 
+
+    public boolean isSame(Socket socket) {
+        return this.socket.equals(socket);
+    }
 }

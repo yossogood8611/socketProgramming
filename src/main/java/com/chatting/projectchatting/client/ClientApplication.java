@@ -76,6 +76,7 @@ public class ClientApplication extends Application {
         Text text = new Text("닉네임");
         TextArea textArea = new TextArea();
         TextField senderField = new TextField();
+        TextArea currentUserArea = new TextArea();
 
         // 랜덤생성 닉네임
         Button randomGenerateNickBtn = new Button("랜덤 닉네임 생성");
@@ -156,7 +157,7 @@ public class ClientApplication extends Application {
         });
 
         textRoot.getChildren().addAll(textField, comboBox, btn2);
-        tab2Root.getChildren().addAll( textArea, textRoot,macro,quitRoomButton);
+        tab2Root.getChildren().addAll( currentUserArea, textArea, textRoot,macro,quitRoomButton);
         tab2Root.setPadding(new Insets(10, 10, 10, 10));
         tab2.setContent(tab2Root);
 
@@ -228,9 +229,6 @@ public class ClientApplication extends Application {
         stage.setTitle("클라이언트");
         stage.show();
 
-
-        // 이벤트 리스너
-        
         // 접속 이벤트 
         btn1.setOnAction(event -> {
             String roomName =roomList.getSelectionModel().getSelectedItem();
@@ -240,7 +238,7 @@ public class ClientApplication extends Application {
              if (nick.isEmpty()) {
                  senderField.requestFocus();
              } else {
-                 client = new Client(btn1, btn2, textArea, port);
+                 client = new Client(btn1, btn2, textArea, port, senderField.getText(), currentUserArea);
                  client.start();
                  tabPane.getSelectionModel().select(1);
                  textField.requestFocus();

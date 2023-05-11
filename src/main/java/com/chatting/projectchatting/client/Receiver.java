@@ -1,6 +1,7 @@
 package com.chatting.projectchatting.client;
 
 import com.chatting.projectchatting.domain.Message;
+import com.chatting.projectchatting.domain.MessageType;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
@@ -23,6 +24,10 @@ public class Receiver extends Thread{
                 try {
                     Message message = (Message) inputStream.readObject();
                     if (Objects.nonNull(message)) {
+                        if (message.getType() == MessageType.ROOM_USER) {
+                            client.setCurrentUser(message.getCurrentUsers());
+                            continue;
+                        }
                         client.receiveMessage(message);
                     }
                 } catch (ClassNotFoundException e) {
