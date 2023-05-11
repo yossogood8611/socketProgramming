@@ -24,14 +24,9 @@ public class Receiver extends Thread {
             ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
             while (true) {
                 try {
-                    System.out.println(out);
-                    System.out.println(inputStream);
-
-                    if (out)
-                        break;
-
                     Message message = (Message) inputStream.readObject();
                     if (Objects.nonNull(message)) {
+                        System.out.println(message);
                         client.receiveMessage(message);
                     }
                 } catch (ClassNotFoundException e) {

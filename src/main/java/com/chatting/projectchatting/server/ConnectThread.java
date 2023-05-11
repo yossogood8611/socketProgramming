@@ -52,6 +52,7 @@ public class ConnectThread extends Thread {
 
     public void receiveAll(Message message){
         for (ClientThread connect : connects) {
+            System.out.println("ConnectThread receive All -- " + connect.getId());
             connect.receive(message);
         }
     }
@@ -72,6 +73,12 @@ public class ConnectThread extends Thread {
     }
 
     public void disconnectSocket(Socket socket) {
+        try {
+            socket.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         connects.remove(socket);
+        System.out.println("ConnectThread " + connects.toString());
     }
 }

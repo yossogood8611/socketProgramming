@@ -46,9 +46,11 @@ public class ClientThread extends Thread {
     }
 
     private void disconnect(Message message) {
+        System.out.println("ClientThread disconnect -- " + connectThread.getId());
+        System.out.println("ClientThread disconnect -- " + socket.toString());
+
         connectThread.receiveAll(message);
         connectThread.getCurrentUserCounter().decrease();
         connectThread.disconnectSocket(socket);
     }
-
 }

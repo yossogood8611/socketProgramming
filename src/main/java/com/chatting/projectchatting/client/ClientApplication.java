@@ -206,7 +206,7 @@ public class ClientApplication extends Application {
         textRoot.getChildren().addAll(textField, comboBox, btn2, exportBtn, importBtn);
         tab2Root.getChildren().addAll( textArea, textRoot,macro,quitRoomButton);
         tab2Root.setPadding(new Insets(10, 10, 10, 10));
-      
+
         tab2.setContent(tab2Root);
 
         //-----------------------------------------------------
@@ -302,6 +302,7 @@ public class ClientApplication extends Application {
             this.setRoom(roomList, rooms);
        });
 
+        // 방나가기
         quitRoomButton.setOnAction(e -> {
             //disconnect 호출
             textField.setText("");

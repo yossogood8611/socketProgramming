@@ -56,12 +56,7 @@ public class Client extends Thread {
     }
 
     public void close() {
-        try {
-            System.out.println("close ---------");
-            this.receiver.close();
-            this.socket.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        System.out.println("Client close ---------");
+        System.out.println("Client disconnect -- " + socket.toString());
     }
 }
